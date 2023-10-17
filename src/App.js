@@ -1,24 +1,31 @@
-import logo from './logo.svg';
 import './App.css';
+import React, { useState, useEffect } from 'react';
+import {Header} from './components/Header';
+import {Nav} from './components/Nav';
+import {Main} from './components/Main';
+//import {Footer} from './components/Footer';
+import secureLocalStorage from 'react-secure-storage';
+
+
+
 
 function App() {
+  const [username, setUsername] = useState(secureLocalStorage.getItem("username"));
+  useEffect(()=>{
+    if(secureLocalStorage.getItem("session_key")){
+      return;
+    }
+    secureLocalStorage.setItem("username",null);
+    setUsername(null);
+  },[])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload by Thu Nguyen.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="App">
+        <Header username={username} setUsername={setUsername}/>
+        <Nav/>
+        <Main username={username} setUsername={setUsername}/>
+         {secureLocalStorage.getItem("session_key")}     
+      
+      </div>
   );
 }
 
