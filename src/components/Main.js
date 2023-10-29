@@ -8,7 +8,7 @@ import { About } from "./About";
 
 export const Main = function(params){
     return(
-        <>
+        <main className="flex-shrink-0">
         <Routes>
             <Route path="/" element={<Home/>}/>
             <Route path="/login" element={<LogIn username={params.username} setUsername={params.setUsername}/>}/>
@@ -17,6 +17,6 @@ export const Main = function(params){
             <Route path="/addRecipe" element={<AddRecipe/>}/>
             <Route path="/about" element={<About/>}/>
         </Routes>
-        </>
+        </main>
     )
 }

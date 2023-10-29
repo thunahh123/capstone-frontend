@@ -31,11 +31,11 @@ export const LogIn = function(params){
         
     }
     return (
-        <>
-            <h1>Log In</h1>
-            <input type="text" placeholder="Username" onChange={(e)=>setLogUsername(e.target.value)}/><br/>            
-            <input type="password" placeholder="Password" onChange={(e)=>setLogPassword(e.target.value)}/><br/>            
-            <button onClick={tryLogIn}>Submit</button>
-        </>
+        <div className="d-flex flex-column py-4 border border-black col-6 col-md-3 m-auto bg-white mt-5 rounded-4">
+            <h1 className="mb-4">Sign In</h1>
+            <input className="col-5 col-md-6 m-auto my-1" type="text" placeholder="Username" onChange={(e)=>setLogUsername(e.target.value)}/><br/>            
+            <input className="col-5 col-md-6 m-auto my-1" type="password" placeholder="Password" onChange={(e)=>setLogPassword(e.target.value)}/><br/>            
+            <button className="btn btn-danger col-4 m-auto my-1" onClick={tryLogIn}>Submit</button>
+        </div>
     )
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { redirect } from "react-router-dom";
 export const Register = function(){
     const [regUsername, setRegUsername] = useState("");
     const [regPassword, setRegPassword] = useState("");
@@ -25,7 +26,9 @@ export const Register = function(){
             .then(res=>res.json())
             .then(
                 (result)=>{
-                    console.log(result);
+                    if(result.status == "success"){
+                        redirect("/login");
+                    }
             })
         }catch(error){
             console.error("Error:", error);

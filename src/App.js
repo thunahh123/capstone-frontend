@@ -1,11 +1,12 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
 import {Header} from './components/Header';
-import {Nav} from './components/Nav';
+//import {Nav} from './components/Nav';
 import {Main} from './components/Main';
-//import {Footer} from './components/Footer';
+import {Footer} from './components/Footer';
 import secureLocalStorage from 'react-secure-storage';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './output.css'
 
 
 
@@ -19,12 +20,11 @@ function App() {
     setUsername(null);
   },[])
   return (
-      <div className="App">
+      <div className="App d-flex flex-column h-100">
         <Header username={username} setUsername={setUsername}/>
-        <Nav/>
         <Main username={username} setUsername={setUsername}/>
          {secureLocalStorage.getItem("session_key")}     
-      
+        <Footer/>
       </div>
   );
 }

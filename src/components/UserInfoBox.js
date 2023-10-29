@@ -32,20 +32,27 @@ export const UserInfoBox = function(params){
     
     
     return(
-        <>
+        <div className="col-2 text-danger d-flex flex-column justify-content-around">
             {params.username ? 
-                <div>
-                    Logged In As {params.username} 
-                    <button onClick={logout}>Log Out</button>
-                </div> 
-                    :
-                <div>
-                    Not Logged In 
-                    <Link to="/login"><button>Log In</button></Link>
-                    <Link to="/register"><button>Register</button></Link>
+                <>
+                    <span className="fw-semibold">Signed in as: {params.username}</span>
+                    <div>
+                        <button className='btn btn-danger' onClick={logout}>Log Out</button>
+                    </div> 
                     
-                </div>}       
-        </>
+                </>
+                    :
+                <>
+                    <span className="fw-semibold">Not signed in </span>
+                    <div className="w-60 d-flex justify-content-center">
+                        <Link to="/login"><button className='btn btn-danger mx-2'>Sign In</button></Link>
+                        <Link to="/register"><button className='btn btn-danger mx-2'>Register</button></Link>
+                    </div>
+                    
+                    
+                </>
+            }       
+        </div>
         
     )
 }
