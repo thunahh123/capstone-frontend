@@ -22,8 +22,7 @@ function App() {
   return (
       <div className="App d-flex flex-column h-100">
         <Header username={username} setUsername={setUsername}/>
-        <Main username={username} setUsername={setUsername}/>
-         {secureLocalStorage.getItem("session_key")}     
+        <Main username={username} setUsername={setUsername}/>     
         <Footer/>
       </div>
   );

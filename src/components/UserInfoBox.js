@@ -37,7 +37,7 @@ export const UserInfoBox = function(params){
                 <>
                     <span className="fw-semibold">Signed in as: {params.username}</span>
                     <div>
-                        <button className='btn btn-danger' onClick={logout}>Log Out</button>
+                        <button className='btn btn-danger' onClick={logout}>Log&nbsp;Out</button>
                     </div> 
                     
                 </>
@@ -45,7 +45,7 @@ export const UserInfoBox = function(params){
                 <>
                     <span className="fw-semibold">Not signed in </span>
                     <div className="w-60 d-flex justify-content-center">
-                        <Link to="/login"><button className='btn btn-danger mx-2'>Sign In</button></Link>
+                        <Link to="/login"><button className='btn btn-danger mx-2'>Sign&nbsp;In</button></Link>
                         <Link to="/register"><button className='btn btn-danger mx-2'>Register</button></Link>
                     </div>
                     
