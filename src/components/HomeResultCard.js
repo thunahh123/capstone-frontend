@@ -20,7 +20,7 @@ export const HomeResultCard = function (params) {
                     fill="var(--bs-secondary-color)"
                 ></rect>
             </svg>
-            <h2 className="fw-normal">{params.recipe.title}</h2>
+            <h2 className="fw-normal"><a className="" href={"/recipe/"+params.recipe.id}>{params.recipe.title}</a></h2>
             <p>
                 {params.recipe.description}
             </p>

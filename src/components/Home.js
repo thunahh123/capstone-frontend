@@ -89,7 +89,7 @@ export const Home = function () {
                 <span className="my-1">Add ingredient to your recipe search:</span>
                 <input className="rounded-2 my-3" value={ingredient} autoComplete="off" type="text" placeholder="search" onChange={(e) => setIngredient(e.target.value)} />
                 {ingredient.length>0 ? <div className="border border-black bg-white rounded-3 position-absolute top-80 col-12">
-                  {searchResults.map((searchResult) =>
+                  {searchResults.slice(0,10).map((searchResult) =>
                     <div key={searchResult.id}><span>{searchResult.name}</span><span onClick={() => { addIngredient(searchResult.name, searchResult.id) }}> +</span></div>
                   )}
                 </div>:<></>}
@@ -122,7 +122,7 @@ export const Home = function () {
           <div className="col-md-7">
             <h2 className="featurette-heading fw-normal lh-1">
               First featurette heading.{" "}
-              <span className="text-body-secondary">It’ll blow your mind.</span>
+              <span className="text-body-secondary">It'll blow your mind.</span>
             </h2>
             <p className="lead">
               Some great placeholder content for the first featurette here.

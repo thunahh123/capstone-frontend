@@ -1,8 +1,10 @@
 import secureLocalStorage from 'react-secure-storage';
-import { Link } from 'react-router-dom';
+import { Link, redirect } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 
-export const UserInfoBox = function(params){
-    
+export const UserInfoBox = function(props){
+    const navigate = useNavigate();
 
     function logout(){
         
@@ -21,9 +23,10 @@ export const UserInfoBox = function(params){
                 (result)=>{
                     secureLocalStorage.removeItem("session_key");
                     secureLocalStorage.removeItem("username");
-                    params.setUsername(null);
-                    //console.log(result);
-            })
+                    props.setUsername(null);
+                    
+            });
+            return navigate('/')
         }catch(error){
             console.error("Error:", error);
         }
@@ -33,9 +36,9 @@ export const UserInfoBox = function(params){
     
     return(
         <div className="col-2 text-danger d-flex flex-column justify-content-around">
-            {params.username ? 
+            {props.username ? 
                 <>
-                    <span className="fw-semibold">Signed in as: {params.username}</span>
+                    <span className="fw-semibold" >Signed in as: <a href={`/user/${props.username}`}>{props.username}</a></span>
                     <div>
                         <button className='btn btn-danger' onClick={logout}>Log&nbsp;Out</button>
                     </div> 
