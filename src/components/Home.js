@@ -15,7 +15,7 @@ export const Home = function () {
       return;
     }
     try {
-      fetch(`http://localhost:8000/api/ingredient/search/${ingredient}`)
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/api/ingredient/search/${ingredient}`)
         .then(res => res.json())
         .then(
           (result) => {
@@ -67,7 +67,7 @@ export const Home = function () {
         query.append("ingredient_ids[]",i.id);
       });
       //return;
-      fetch(`http://localhost:8000/api/recipe/search?${query.toString()}`)
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/api/recipe/search?${query.toString()}`)
       .then(res => res.json())
       .then(
         (result) => {

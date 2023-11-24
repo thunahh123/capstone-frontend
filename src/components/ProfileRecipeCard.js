@@ -11,7 +11,7 @@ export const ProfileRecipeCard = function (props) {
     //delete my recipe
     function deleteCreatedRecipe(id){
         try {
-            fetch(`http://localhost:8000/api/user/deleteRecipe?session_key=${secureLocalStorage.getItem('session_key')}&recipe_id=${id}`,
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/deleteRecipe?session_key=${secureLocalStorage.getItem('session_key')}&recipe_id=${id}`,
             {method: 'DELETE'})
                 .then(res => res.json())
                 .then(

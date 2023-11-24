@@ -10,7 +10,7 @@ export const ProfileCommentCard = function (props) {
     //delete my comment
     function deleteCreatedComment(id) {
         try {
-            fetch(`http://localhost:8000/api/user/deleteMyComment?session_key=${secureLocalStorage.getItem('session_key')}&comment_id=${id}`,
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/deleteMyComment?session_key=${secureLocalStorage.getItem('session_key')}&comment_id=${id}`,
                 { method: 'DELETE' })
                 .then(res => res.json())
                 .then(

@@ -15,7 +15,7 @@ function App() {
     if(secureLocalStorage.getItem("session_key")){
       return;
     }
-    secureLocalStorage.setItem("username",null);
+    secureLocalStorage.removeItem("username");
     setUsername(null);
   },[])
   return (

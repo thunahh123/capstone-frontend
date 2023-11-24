@@ -4,7 +4,7 @@ export const Nav = function (params) {
     return (
         <nav className="col-10 navbar navbar-expand-lg">
             <div className="container-fluid">
-                <a className="navbar-brand row" href="#">
+                <a className="navbar-brand row" href="/">
                     <img></img>
                     <h1 className="text-secondary">Emily's Recipe App</h1>
                 </a>

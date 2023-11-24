@@ -22,7 +22,7 @@ export const UserPage = function () {
     //getuser
     function getUser() {
         try {
-            fetch(`http://localhost:8000/api/user/getName/${params.name}`)
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/getName/${params.name}`)
                 .then(res => res.json())
                 .then(
                     (result) => {
@@ -36,7 +36,7 @@ export const UserPage = function () {
     //get saved recipes
     function getSavedRecipes(){
         try {
-            fetch(`http://localhost:8000/api/user/savedRecipes/?session_key=${secureLocalStorage.getItem('session_key')}`)
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/savedRecipes/?session_key=${secureLocalStorage.getItem('session_key')}`)
                 .then(res => res.json())
                 .then(
                     (result) => {
@@ -51,7 +51,7 @@ export const UserPage = function () {
     //get all created recipes
     function getCreatedRecipes(){
         try {
-            fetch(`http://localhost:8000/api/user/getCreatedRecipes?session_key=${secureLocalStorage.getItem('session_key')}`)
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/getCreatedRecipes?session_key=${secureLocalStorage.getItem('session_key')}`)
                 .then(res => res.json())
                 .then(
                     (result) => {
@@ -64,7 +64,7 @@ export const UserPage = function () {
     //get all comments 
     function getComments(){
         try {
-            fetch(`http://localhost:8000/api/user/getComments?session_key=${secureLocalStorage.getItem('session_key')}`)
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/getComments?session_key=${secureLocalStorage.getItem('session_key')}`)
                 .then(res => res.json())
                 .then(
                     (result) => {

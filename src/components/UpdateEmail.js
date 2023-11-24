@@ -17,7 +17,7 @@ export const UpdateEmail = function () {
         }
         //fetch
         try {
-            fetch(`http://localhost:8000/api/user/updateEmail`, {
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/updateEmail`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"

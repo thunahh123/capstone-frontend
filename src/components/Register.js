@@ -14,7 +14,7 @@ export const Register = function(){
             return;
         }
         try{
-            fetch("http://localhost:8000/api/register",{
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/register`,{
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

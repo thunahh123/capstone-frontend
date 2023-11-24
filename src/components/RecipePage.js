@@ -9,7 +9,7 @@ export const RecipePage = function () {
     //this function fetch the recipe
     function getRecipe() {
         try {
-            fetch(`http://localhost:8000/api/recipe/find/${params.id}`)
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/recipe/find/${params.id}`)
                 .then(res => res.json())
                 .then(
                     (result) => {

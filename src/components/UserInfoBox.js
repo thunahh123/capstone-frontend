@@ -1,6 +1,5 @@
 import secureLocalStorage from 'react-secure-storage';
 import { Link, redirect } from 'react-router-dom';
-import { useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
 export const UserInfoBox = function(props){
@@ -9,7 +8,7 @@ export const UserInfoBox = function(props){
     function logout(){
         
         try{
-            fetch("http://localhost:8000/api/logout",{
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/logout`,{
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json"

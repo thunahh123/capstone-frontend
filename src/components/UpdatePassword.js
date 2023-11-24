@@ -17,7 +17,7 @@ export const UpdatePassword = function () {
         }
         //fetch
         try {
-            fetch(`http://localhost:8000/api/user/updatePW`, {
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/updatePW`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"

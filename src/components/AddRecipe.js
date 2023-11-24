@@ -64,7 +64,7 @@ export const AddRecipe = function () {
   //this function fetches all the units from db
   function fetchUnits() {
     try {
-      fetch(`http://localhost:8000/api/units`)
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/api/units`)
         .then(res => res.json())
         .then(
           (result) => {
@@ -84,7 +84,7 @@ export const AddRecipe = function () {
       return;
     }
     try {
-      fetch(`http://localhost:8000/api/ingredient/search/${ingredient.name.toLowerCase()}`)
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/api/ingredient/search/${ingredient.name.toLowerCase()}`)
         .then(res => res.json())
         .then(
           (result) => {
@@ -151,7 +151,7 @@ export const AddRecipe = function () {
       return;
     }
     try {
-      fetch("http://localhost:8000/api/recipe/new", {
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/api/recipe/new`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

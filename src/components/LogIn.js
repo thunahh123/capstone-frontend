@@ -9,7 +9,7 @@ export const LogIn = function(params){
     const navigate = useNavigate();
     function tryLogIn(){
         try{
-            fetch("http://localhost:8000/api/login",{
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/login`,{
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
