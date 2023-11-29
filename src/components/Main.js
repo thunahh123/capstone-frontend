@@ -9,6 +9,7 @@ import { RecipePage } from "./RecipePage";
 import { UserPage } from "./UserPage";
 import { UpdateEmail } from "./UpdateEmail";
 import { UpdatePassword } from "./UpdatePassword";
+import { Manage } from "./Manage";
 
 export const Main = function(params){
     return(
@@ -24,6 +25,7 @@ export const Main = function(params){
             <Route path="/user/:name" element={<UserPage/>}/>
             <Route path="/user/update/email" element={<UpdateEmail/>}/>
             <Route path="/user/update/password" element={<UpdatePassword/>}/>
+            <Route path="/manage" element={<Manage/>}/>
         </Routes>
         </main>
     )

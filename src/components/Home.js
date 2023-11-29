@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { HomeResultCard } from "./HomeResultCard";
+import { HomeFeatureCard } from "./HomeFeatureCard";
 
 export const Home = function () {
   const [ingredient, setIngredient] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [ingredientList, setIngredientList] = useState([]);
   const [recipes, setRecipes] = useState([]); //for top match recipes
+  const [featuredRecipes, setFeaturedRecipes] = useState([]);
 
+  useEffect(getFeaturedRecipes, []);
   // this function fetch all ingredients matching with the input
   function getIngredients() {
     if (ingredient.length <= 0) {
@@ -20,7 +23,6 @@ export const Home = function () {
         .then(
           (result) => {
             setSearchResults(result);
-            console.log(result);
           })
     } catch (error) {
       console.error("Error:", error);
@@ -31,7 +33,6 @@ export const Home = function () {
   //this function adds search result to the ingredient list
   function addIngredient(name, id) {
     if (ingredientList.filter((ing) => (ing.id === id)).length > 0) {
-      console.log("ingredient already added");
       return;
     }
     let ingredientClone = JSON.parse(JSON.stringify(ingredientList));
@@ -49,189 +50,100 @@ export const Home = function () {
   // use useEffect to run the function whenever ingredient changes
   useEffect(() => { getIngredients() }, [ingredient]);
   // use useEffect to run filter function everytime the ingredients list changes
-  useEffect(()=>{filterRecipes()}, [ingredientList]);
+  useEffect(() => { filterRecipes() }, [ingredientList]);
 
   //this function will filter Recipes in Home page
-  function filterRecipes(){
-    if(ingredientList.length<=0){
+  function filterRecipes() {
+    if (ingredientList.length <= 0 ) {
+      setRecipes([]);
       return;
     }
     try {//"ingredient_ids": ingredientList.map((ingredient)=>(ingredient.id))
       let query = new URLSearchParams({
-        "min_cook_time" : 0,
-        "max_cook_time" : 9999,
-        "min_ingredients" : 0,
-        "max_ingredients" : 9999
+        "min_cook_time": 0,
+        "max_cook_time": 9999,
+        "min_ingredients": 0,
+        "max_ingredients": 9999
       });
       ingredientList.forEach(i => {
-        query.append("ingredient_ids[]",i.id);
+        query.append("ingredient_ids[]", i.id);
       });
       //return;
       fetch(`${process.env.REACT_APP_BACKEND_URL}/api/recipe/search?${query.toString()}`)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          setRecipes(result);
-          console.log(result);
-        });
+        .then(res => res.json())
+        .then(
+          (result) => {
+            setRecipes(result);
+          });
     } catch (error) {
       console.error("Error:", error);
     }
   }
+
+  //fetch featured recipes
+  function getFeaturedRecipes() {
+    try {
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/api/recipe/getFeatured`)
+        .then(res => res.json())
+        .then(
+          (result) => {
+            setFeaturedRecipes(result);
+          })
+    } catch (error) {
+      console.error("Error:", error);
+    }
+
+  }
   return (
-    <div className="d-flex flex-column">
-      <div className="container-fluid d-flex">
-        {/* Search Ingredients */}
-        <div className="col-6 p-3 h-100">
-          <div className="border border-black col-10 mx-auto p-3">
-            <form className="my-2 container-fluid">
-              <label className="d-flex flex-column col-10 col-xxl-8 m-auto fw-semibold position-relative">
-                <span className="my-1">Add ingredient to your recipe search:</span>
-                <input className="rounded-2 my-3" value={ingredient} autoComplete="off" type="text" placeholder="search" onChange={(e) => setIngredient(e.target.value)} />
-                {ingredient.length>0 ? <div className="border border-black bg-white rounded-3 position-absolute top-80 col-12">
-                  {searchResults.slice(0,10).map((searchResult) =>
-                    <div key={searchResult.id}><span>{searchResult.name}</span><span onClick={() => { addIngredient(searchResult.name, searchResult.id) }}> +</span></div>
+    <div className="d-flex flex-column h-100 flex-grow-1 border-top border-secondary">
+      <div className="col-8 border border-black mx-auto rounded-4 mt-5 m-4 p-4 d-flex
+       flex-column flex-grow-1">
+        <div className="row flex-grow-1">
+          <div className="col-4">
+            <div className="border border-black mx-auto py-3 position-relative bg-dark h-100">
+            <div className="container-fluid mb-5 col-11">
+              <label>Add ingredient to your recipe search:</label>
+              <div className="border bg-white mt-2 rounded-3 position-absolute w-75 z-3">
+                <input className="rounded-2 border-white col-12" value={ingredient} autoComplete="off" type="text" placeholder="search..." onChange={(e) => setIngredient(e.target.value)} />
+                {searchResults.filter((item) => !ingredientList.map(ing => ing.id).includes(item.id)).length > 0 ? <div className="py-2">
+                  {searchResults.filter((item) => !ingredientList.map(ing => ing.id).includes(item.id)).slice(0, 8).map((searchResult, index) =>
+                    <>
+                      <option className="px-2 text-wrap" value={searchResult.name} key={searchResult.id} onClick={() => { addIngredient(searchResult.name, searchResult.id) }}>{searchResult.name}</option>
+                      {index == searchResults.filter((item) => !ingredientList.map(ing => ing.id).includes(item.id)).slice(0, 8).length - 1 ? <></> : <hr className="m-2" />}
+                    </>
+
                   )}
-                </div>:<></>}
-              </label>
-            </form>
-            <NavLink to="/search" className="text-light">Advanced Search</NavLink>
-            {/* search results */}
-            
-          </div >
-        </div>
-        {/* ingredients list */}
-        <div className=" row flex-grow-1 d-flex-column p-2">
-          <div className="border border-black bg-white rounded-4 row mx-auto col-9 col-xxl-7 my-2 d-flex flex-column">
-            {ingredientList.map((ing) =>
-              <div key={ing.id}><span>{ing.name}&nbsp;</span><span onClick={() => { removeIngredient(ing.id) }}>x</span></div>
-            )}
+                </div> : <></>
+                }
+              </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-8">
+            <div className="mx-auto border border-black bg-dark align-content-start rounded-4 h-100 col-9 col-xxl-7 d-flex flex-row px-2 py-1 gap-3 flex-wrap flex-grow-1">
+              {ingredientList.map((ing) =>
+                <span className="d-inline-flex border bg-secondary border-black px-1 rounded" key={ing.id}><span>{ing.name}&nbsp;</span><span className="text-danger" onClick={() => { removeIngredient(ing.id) }}>x</span></span>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-      {/* Featured Recipes */}
-      <div className="container marketing">
-        {/* top recipes */}
-        <div className="row">          
-              {recipes.map((r)=>(<HomeResultCard key={r.id} recipe={r}/>))}     
-        </div>
+        {recipes.length>0 ? <hr/> : <></> }
+        <div className="row">
+          <div className="container marketing">
+            {/* top recipes */}
+            <div className="d-flex justify-content-xxl-around flex-wrap align-items-stretch column-gap-3 column-gap-lg-0  row-gap-3">
+              {recipes.map((r) => (<HomeResultCard key={r.id} recipe={r} />))}
+            </div>
 
-        <hr className="featurette-divider" />
-
-        <div className="row featurette">
-          <div className="col-md-7">
-            <h2 className="featurette-heading fw-normal lh-1">
-              First featurette heading.{" "}
-              <span className="text-body-secondary">It'll blow your mind.</span>
-            </h2>
-            <p className="lead">
-              Some great placeholder content for the first featurette here.
-              Imagine some exciting prose here.
-            </p>
-          </div>
-          <div className="col-md-5">
-            <svg
-              className="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto"
-              width="500"
-              height="500"
-              xmlns="http://www.w3.org/2000/svg"
-              role="img"
-              aria-label="Placeholder: 500x500"
-              preserveAspectRatio="xMidYMid slice"
-              focusable="false"
-            >
-              <title>Placeholder</title>
-              <rect
-                width="100%"
-                height="100%"
-                fill="var(--bs-secondary-bg)"
-              ></rect>
-              <text x="50%" y="50%" fill="var(--bs-secondary-color)" dy=".3em">
-                500x500
-              </text>
-            </svg>
+            <div>
+              <hr className="featurette-divider z-0" />
+              {/* Featured Recipes */}
+              {featuredRecipes.map((r, index) => (
+                <HomeFeatureCard recipe={r} index={index} key={r.id} />
+              ))}
+            </div>
           </div>
         </div>
-
-        <hr className="featurette-divider" />
-
-        <div className="row featurette">
-          <div className="col-md-7 order-md-2">
-            <h2 className="featurette-heading fw-normal lh-1">
-              Oh yeah, it's that good.{" "}
-              <span className="text-body-secondary">See for yourself.</span>
-            </h2>
-            <p className="lead">
-              Another featurette? Of course. More placeholder content here to
-              give you an idea of how this layout would work with some actual
-              real-world content in place.
-            </p>
-          </div>
-          <div className="col-md-5 order-md-1">
-            <svg
-              className="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto"
-              width="500"
-              height="500"
-              xmlns="http://www.w3.org/2000/svg"
-              role="img"
-              aria-label="Placeholder: 500x500"
-              preserveAspectRatio="xMidYMid slice"
-              focusable="false"
-            >
-              <title>Placeholder</title>
-              <rect
-                width="100%"
-                height="100%"
-                fill="var(--bs-secondary-bg)"
-              ></rect>
-              <text x="50%" y="50%" fill="var(--bs-secondary-color)" dy=".3em">
-                500x500
-              </text>
-            </svg>
-          </div>
-        </div>
-
-        <hr className="featurette-divider" />
-
-        <div className="row featurette">
-          <div className="col-md-7">
-            <h2 className="featurette-heading fw-normal lh-1">
-              And lastly, this one.{" "}
-              <span className="text-body-secondary">Checkmate.</span>
-            </h2>
-            <p className="lead">
-              And yes, this is the last block of representative placeholder
-              content. Again, not really intended to be actually read, simply
-              here to give you a better view of what this would look like with
-              some actual content. Your content.
-            </p>
-          </div>
-          <div className="col-md-5">
-            <svg
-              className="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto"
-              width="500"
-              height="500"
-              xmlns="http://www.w3.org/2000/svg"
-              role="img"
-              aria-label="Placeholder: 500x500"
-              preserveAspectRatio="xMidYMid slice"
-              focusable="false"
-            >
-              <title>Placeholder</title>
-              <rect
-                width="100%"
-                height="100%"
-                fill="var(--bs-secondary-bg)"
-              ></rect>
-              <text x="50%" y="50%" fill="var(--bs-secondary-color)" dy=".3em">
-                500x500
-              </text>
-            </svg>
-          </div>
-        </div>
-
-        <hr className="featurette-divider" />
-
       </div>
     </div>
   );

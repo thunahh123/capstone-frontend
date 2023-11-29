@@ -90,7 +90,7 @@ export const Search = function () {
       <div className="d-flex flex-wrap flex-grow-1">
 
         {/* filters section */}
-        <div className="col-12 col-md-4 col-lg-3 bg-dark d-flex flex-grow-1 flex-column text-secondary">
+        <div className="col-12 col-md-3 col-xxl-2 bg-dark d-flex flex-column">
           <h4 className="text-center col-12 py-3">Filters</h4>
           <div className="flex-grow-1 d-flex flex-column justify-content-around flex-shrink-0 px-2 text-center">
             <div>
@@ -142,40 +142,45 @@ export const Search = function () {
         </div>
 
         {/* search section */}
-        <div className="col-12 col-md-8 col-lg-9">
+        <div className="col-12 col-md-9 flex-grow-1 h-50 d-flex flex-column">
           <h3 className="text-center col-12">Search Page</h3>
           <div className="d-flex">
             {/* Search Ingredients */}
-            <div className="">
-              <div className="border border-black col-10 mx-auto p-3">
-                <form className="my-2 container-fluid">
-                  <label className="d-flex flex-column col-10 col-xxl-8 m-auto fw-semibold position-relative">
-                    <span className="my-1">Add ingredient to your recipe search:</span>
-                    <input className="rounded-2 my-3" value={ingredient} autoComplete="off" type="text" placeholder="search" onChange={(e) => setIngredient(e.target.value)} />
-                    {ingredient.length > 0 ? <div className="border border-black bg-white rounded-3 position-absolute top-80 col-12">
-                      {searchResults.slice(0, 10).map((searchResult) =>
-                        <div key={searchResult.id}><span>{searchResult.name}</span><span onClick={() => { addIngredient(searchResult.name, searchResult.id) }}> +</span></div>
+            <div className="col-3 mx-auto">
+              <div className="border border-black col-10 mx-auto py-3 position-relative h-100 bg-dark">
+                <div className="container-fluid mb-5 mx-auto col-11">
+                  <label>Add ingredient to your recipe search:</label>
+                  <div className="border bg-white mt-2 rounded-3 position-absolute w-75">
+                    <input className="rounded-2 border-white col-12" value={ingredient} autoComplete="off" type="text" placeholder="search..." onChange={(e) => setIngredient(e.target.value)} />
+                    {searchResults.filter((item)=>!ingredientList.map(ing=>ing.id).includes(item.id)).length > 0 ? <div className="py-2">
+                      {searchResults.filter((item)=>!ingredientList.map(ing=>ing.id).includes(item.id)).slice(0, 8).map((searchResult, index) =>
+                        <>
+                          <option className="px-2 text-wrap" value={searchResult.name} key={searchResult.id} onClick={() => { addIngredient(searchResult.name, searchResult.id) }}>{searchResult.name}</option>
+                          {index==searchResults.filter((item)=>!ingredientList.map(ing=>ing.id).includes(item.id)).slice(0, 8).length-1 ? <></> : <hr className="m-2"/>}
+                        </>
+                       
                       )}
                     </div> : <></>}
-                  </label>
-                </form>
+                  </div>
+                </div>
+
 
                 {/* search results */}
 
               </div >
             </div>
             {/* ingredients list */}
-            <div className="">
-              <div className="border border-black bg-white rounded-4 row mx-auto col-9 col-xxl-7 my-2 d-flex flex-column">
+            <div className="col-8">
+              <div className="border border-black bg-dark align-content-start rounded-4 h-100 col-9 col-xxl-7 d-flex flex-row px-2 py-1 gap-3 flex-wrap flex-grow-1">
                 {ingredientList.map((ing) =>
-                  <div key={ing.id}><span>{ing.name}&nbsp;</span><span onClick={() => { removeIngredient(ing.id) }}>x</span></div>
+                  <span className="d-inline-flex border bg-secondary border-black px-1 rounded" key={ing.id}><span>{ing.name}&nbsp;</span><span className="text-danger" onClick={() => { removeIngredient(ing.id) }}>x</span></span>
                 )}
               </div>
             </div>
           </div>
           {/* top recipes */}
-          <div className="row">
-            {recipes.map((r) => (<SearchResultCard key={r.id} recipe={r} searched = {ingredientList.map(i=>i.id)}/>))}
+          <div className="row col-xxl-9 flex-grow-1 h-50">
+            {recipes.map((r) => (<SearchResultCard addIngredient={addIngredient} key={r.id} recipe={r} searched={ingredientList.map(i => i.id)} />))}
           </div>
         </div>
 

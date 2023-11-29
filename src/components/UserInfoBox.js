@@ -22,6 +22,7 @@ export const UserInfoBox = function(props){
                 (result)=>{
                     secureLocalStorage.removeItem("session_key");
                     secureLocalStorage.removeItem("username");
+                    secureLocalStorage.removeItem("is_admin");
                     props.setUsername(null);
                     
             });
@@ -34,7 +35,7 @@ export const UserInfoBox = function(props){
     
     
     return(
-        <div className="col-2 text-danger d-flex flex-column justify-content-around">
+        <div className="col-2 d-flex flex-column justify-content-around">
             {props.username ? 
                 <>
                     <span className="fw-semibold" >Signed in as: <a href={`/user/${props.username}`}>{props.username}</a></span>

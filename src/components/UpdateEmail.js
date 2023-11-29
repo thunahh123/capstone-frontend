@@ -49,12 +49,12 @@ export const UpdateEmail = function () {
 
     }
     return (
-        <div className="d-flex flex-column py-4 border border-black col-6 col-lg-3 m-auto bg-white mt-5 rounded-4">
-            <h1 className="mb-4">Update Your Email</h1>
+        <div className="d-flex flex-column py-4 border border-black col-6 col-lg-3 m-auto bg-dark mt-5 rounded-4">
+            <h1 className="mb-4 text-center">Update Your Email</h1>
             <input className="col-5 col-md-6 m-auto my-1" type="password" placeholder="Your Password" value={password} onChange={(e) => setPassword(e.target.value)} /><br />
             <input className="col-5 col-md-6 m-auto my-1" type="email" placeholder="New Email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} /><br />
             <input className="col-5 col-md-6 m-auto my-1" type="email" placeholder="Confirm New Email" value={confirmedEmail} onChange={(e) => setConfirmedEmail(e.target.value)} /><br />
-            <p className="fw-semibold text-danger">{message}</p>
+            <p className="fw-semibold text-danger text-center">{message}</p>
             <button className="btn btn-danger col-4 m-auto my-1" onClick={()=>{tryUpdateEmail()}}>Update</button>
         </div>
     )

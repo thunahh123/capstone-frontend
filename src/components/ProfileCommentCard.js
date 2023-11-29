@@ -23,11 +23,11 @@ export const ProfileCommentCard = function (props) {
 
     }
     return (
-        <div className="d-flex mx-auto my-2 col-8 bg-light ">
+        <div className="d-flex mx-auto my-2 col-8 bg-secondary rounded-5 px-3 py-1 ">
             <div className="ps-2">
                 <div>
-                </div><h2 className="fw-normal"><a rel="noreferrer noopener" target="_blank" href={"/recipe/" + props.comment.recipe.id}>{props.comment.recipe.title}</a></h2>
-                <span>{props.comment.content} </span>
+                </div><h2 className="fw-normal"><a className="link-underline link-underline-opacity-0" rel="noreferrer noopener" target="_blank" href={"/recipe/" + props.comment.recipe.id}>{props.comment.recipe.title}</a></h2>
+                <span>{props.comment.content.length>200 ? props.comment.content.split('').splice(0,197).join('')+"..." : props.comment.content}</span>
                 <p><FontAwesomeIcon onClick={() => setButtonPop(true)} icon={faTrash} /></p>
                 <DeletePopup trigger={buttonPop} setTrigger={setButtonPop}>
                     <p>Are you sure want to delete this?</p>

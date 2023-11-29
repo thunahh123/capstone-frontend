@@ -25,6 +25,7 @@ export const LogIn = function(params){
                     if(result.status === "success"){
                         secureLocalStorage.setItem("session_key", result.session_key);
                         secureLocalStorage.setItem("username", logUsername);
+                        secureLocalStorage.setItem("is_admin", result.is_admin);
                         params.setUsername(logUsername);
                         navigate("/");
                     }else{

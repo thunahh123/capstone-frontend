@@ -25,7 +25,7 @@ export const ProfileSavedRecipeCard = function (props) {
     
     }
     return (
-        <div className="d-flex mx-auto my-2 col-8 bg-light ">
+        <div className="d-flex mx-auto my-2 col-8 bg-secondary rounded-5 px-3 py-1">
             <div className="my-auto">
                 <svg
                     className="bd-placeholder-img rounded-circle"
@@ -47,10 +47,10 @@ export const ProfileSavedRecipeCard = function (props) {
             </div>
             <div className="ps-2">
                 <div>
-                </div><h2 className="fw-normal"><a rel="noreferrer noopener" target="_blank" href={"/recipe/" + props.savedRecipe.id}>{props.savedRecipe.title}</a></h2>
-                <span>{props.savedRecipe.description} </span>
+                </div><h2 className="fw-normal"><a className="link-underline link-underline-opacity-0" rel="noreferrer noopener" target="_blank" href={"/recipe/" + props.savedRecipe.id}>{props.savedRecipe.title}</a></h2>
+                <span>{props.savedRecipe.description.length>200 ? props.savedRecipe.description.split('').splice(0,197).join('')+"..." : props.savedRecipe.description}</span>
                 <p>
-                    <a className="btn btn-secondary" rel="noreferrer noopener" target="_blank" href={"/recipe/" + props.savedRecipe.id}>
+                    <a className="btn btn-primary" rel="noreferrer noopener" target="_blank" href={"/recipe/" + props.savedRecipe.id}>
                         View details »
                     </a>
                 </p>

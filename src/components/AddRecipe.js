@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import secureLocalStorage from 'react-secure-storage';
+import { ResultPostCard } from "./ResultPostCard";
 
 
 export const AddRecipe = function () {
@@ -21,6 +22,10 @@ export const AddRecipe = function () {
   const [badAmountInput, setBadAmountInput] = useState(false);
   const [badUnitInput, setBadUnitInput] = useState(false);
   const [errorMessage, setErrorMess] = useState("");
+  const [buttonPop, setButtonPop] = useState(false);
+  //recipe id 
+  const [recipeId, setRecipeId] = useState(-1);
+
   //this function call fetchUnits function when the page loads
   useEffect(() => { fetchUnits() }, []);
 
@@ -107,9 +112,6 @@ export const AddRecipe = function () {
   }
   //add recipe's ingredients
   function addIngredientToList() {
-    console.log("addIngredientToList")
-    console.log(ingredient)
-    console.log(newUnit);
     let bad = false;
     if (!Object.hasOwn(ingredient, "id")) {
       setBadIngInput(true);
@@ -146,6 +148,7 @@ export const AddRecipe = function () {
   }
   //this post function will add new recipe to db
   function post() {
+    setErrorMess("");
     if (!recipeName || !servings || !time || !desc || dirs.length == 0 || ingredientList.length == 0) {
       setErrorMess("Please complete the form");
       return;
@@ -171,20 +174,55 @@ export const AddRecipe = function () {
               "unit_id": i.unit.id
             })
             )
-
         })
       })
-    } catch (error) {
+        .then(res => res.json())
+        .then(
+          (result) => {
+            if (result.status === "success") {
+              clearForm();
+              setButtonPop(true);
+              setRecipeId(result.newId);
+            }
+            else {
+              console.log(result.message);
+            }
+          }
+        );
+    }
+    catch (error) {
       console.error("Error:", error);
     }
+  }
 
+  function clearForm(){
+    setDesc("");
+    setDirs([""]);
+    setRecipeName("");
+    setServings(1);
+    setAmount(1);
+    setBadAmountInput(false);
+    setBadIngInput(false);
+    setBadUnitInput(false);
+    setErrorMess("");
+    setTime(15);
+    setSearchResults([]);
+    setNewUnit({});
+    setIngredient({name:""});
+    setIngredientList([]);
+  }
+
+  //post function
+  function recipeSubmit(e) {
+    e.preventDefault();
+    post();
 
   }
-  
+
   return (
     <div className="w-100">
       <h2 className="text-center">Add New Recipe</h2>
-      <form className="border border-black container-md py-4 text-center" id="add-recipe-form">
+      <form className="border border-black container-md py-4 text-center bg-dark" id="add-recipe-form">
         <p className="text-danger fw-bold">{errorMessage}</p>
         <div className="d-flex flex-row col-11 col-md-9 mx-auto px-3 flex-wrap row-gap-4">
           <label className="col-12 col-lg-10 col-xxl-6 d-flex gap-3">
@@ -254,7 +292,7 @@ export const AddRecipe = function () {
                 </td>
                 <td>
                   {/* amout input */}
-                  <input className={badAmountInput ? "form-control is-invalid" : "form-control"} type="number" value={newAmount} onChange={(e) => { setAmount(Math.max(e.target.value,0)); setBadAmountInput(false); }} />
+                  <input className={badAmountInput ? "form-control is-invalid" : "form-control"} type="number" value={newAmount} onChange={(e) => { setAmount(Math.max(e.target.value, 0)); setBadAmountInput(false); }} />
                 </td>
                 <td>
                   {/* map the units */}
@@ -280,8 +318,15 @@ export const AddRecipe = function () {
             </tbody>
           </table>
         </div>
-        <button type="button" className="btn btn-danger" onClick={(e) => { e.preventDefault(); post() }}>POST</button>
+        <button className="btn btn-primary" onClick={recipeSubmit}>POST</button>
       </form>
+      <ResultPostCard trigger={buttonPop} setTrigger={setButtonPop}>
+        <p>Your recipe successfully posted </p>
+        <div>
+          <a className="btn btn-primary" onClick={() => setButtonPop(false)} href={"/recipe/" + recipeId}>View Recipe</a>
+          <a className="btn btn-primary" onClick={() => setButtonPop(false)} href="/">Go to home</a>
+        </div>
+      </ResultPostCard>
     </div>
   )
 }

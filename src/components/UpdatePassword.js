@@ -49,12 +49,12 @@ export const UpdatePassword = function () {
 
     }
     return(
-        <div className="d-flex flex-column py-4 border border-black col-6 col-lg-3 m-auto bg-white mt-5 rounded-4">
-            <h1 className="mb-4">Update Your Password</h1>
+        <div className="d-flex flex-column py-4 border border-black col-6 col-lg-3 m-auto bg-dark mt-5 rounded-4">
+            <h1 className="mb-4 text-center">Update Your Password</h1>
             <input className="col-5 col-md-6 m-auto my-1" type="password" placeholder="Your Password" value={password} onChange={(e) => setPassword(e.target.value)} /><br />
             <input className="col-5 col-md-6 m-auto my-1" type="password" placeholder="New Password" value={newPass} onChange={(e) => setNewPass(e.target.value)} /><br />
             <input className="col-5 col-md-6 m-auto my-1" type="password" placeholder="Confirm New Password" value={confirmedPass} onChange={(e) => setConfirmedPass(e.target.value)} /><br />
-            <p className="fw-semibold text-danger">{message}</p>
+            <p className="fw-semibold text-danger text-center">{message}</p>
             <button className="btn btn-danger col-4 m-auto my-1" onClick={()=>{tryUpdatePassword()}}>Update</button>
         </div>
     )

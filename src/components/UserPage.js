@@ -4,6 +4,7 @@ import secureLocalStorage from "react-secure-storage";
 import { ProfileSavedRecipeCard } from "./ProfileSavedRecipeCard";
 import { ProfileRecipeCard } from "./ProfileRecipeCard";
 import { ProfileCommentCard } from "./ProfileCommentCard";
+import myProfile from "../images/profile.jpg";
 
 
 export const UserPage = function () {
@@ -11,14 +12,15 @@ export const UserPage = function () {
     const [menu, setMenu] = useState("saved recipes");
     const [savedRecipes, setSavedRecipes] = useState([]);
     const [myRecipes, setMyRecipes] = useState([]);
-    const [myComments, setMyComments]= useState([]);
+    const [myComments, setMyComments] = useState([]);
+    const [modalShow, setModalShow] = useState(false);
     let params = useParams();
 
     //useEffect function
     useEffect(() => { getUser() }, [params.name]);
-    useEffect(()=>{getSavedRecipes()},[]);
-    useEffect(()=>{getCreatedRecipes()},[]);
-    useEffect(()=>{getComments()},[]);
+    useEffect(() => { getSavedRecipes() }, []);
+    useEffect(() => { getCreatedRecipes() }, []);
+    useEffect(() => { getComments() }, []);
     //getuser
     function getUser() {
         try {
@@ -34,7 +36,7 @@ export const UserPage = function () {
     }
 
     //get saved recipes
-    function getSavedRecipes(){
+    function getSavedRecipes() {
         try {
             fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/savedRecipes/?session_key=${secureLocalStorage.getItem('session_key')}`)
                 .then(res => res.json())
@@ -45,11 +47,11 @@ export const UserPage = function () {
         } catch (error) {
             console.error("Error:", error);
         }
-    
+
     }
-    
+
     //get all created recipes
-    function getCreatedRecipes(){
+    function getCreatedRecipes() {
         try {
             fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/getCreatedRecipes?session_key=${secureLocalStorage.getItem('session_key')}`)
                 .then(res => res.json())
@@ -62,7 +64,7 @@ export const UserPage = function () {
         }
     }
     //get all comments 
-    function getComments(){
+    function getComments() {
         try {
             fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/getComments?session_key=${secureLocalStorage.getItem('session_key')}`)
                 .then(res => res.json())
@@ -74,14 +76,15 @@ export const UserPage = function () {
             console.error("Error:", error);
         }
     }
+
     //function delete
     return (
         <div className="d-flex flex-column h-100 flex-grow-1 border-top border-secondary">
             <div className="d-flex flex-wrap flex-grow-1">
                 {/* user info */}
-                <div className="col-12 col-md-4 col-lg-3 bg-dark d-flex flex-grow-1 flex-column text-secondary">
-                    <h4 className="text-center col-12 py-3">User Info</h4>
-                    <img src="" alt="" width="150" height="150"></img>
+                <div className="col-12 col-md-3 col-xxl-2 bg-dark d-flex flex-column text-center gap-5">
+                    <h4 className="col-12 py-3">Personal Infomation</h4>
+                    <img className="mx-auto" src={myProfile} alt="profile picture" width="150" height="150"></img>
                     <div><strong>Email:</strong> {user.email}</div>
                     <div><strong>Date created:</strong> {user.created_at}</div>
                     <div><strong>Last login:</strong> {user.last_login}</div>
@@ -90,8 +93,8 @@ export const UserPage = function () {
                 </div>
 
                 {/* user content */}
-                <div className="col-12 col-md-8 col-lg-9">
-                    <h4 className="text-center col-12">My Profile</h4>
+                <div className="col-12 col-md-9 flex-grow-1">
+                    <h4 className="text-center col-12 my-2">Profile</h4>
                     <div>
                         <form className="d-flex flex-column col-6 mx-auto text-start">
                             <label>
@@ -108,28 +111,28 @@ export const UserPage = function () {
                             </label>
                         </form>
                     </div>
-                    <div>
+                    <div className="col-xxl-9">
                         {menu === "saved recipes" ?
                             <div>
-                                <h3>My Saved Recipes</h3>
+                                <h3 className="text-center">My Saved Recipes</h3>
                                 <div>
-                                    {savedRecipes.map((s)=>(<ProfileSavedRecipeCard key={s.id} savedRecipe={s} getSavedRecipes={getSavedRecipes}/>))}
+                                    {savedRecipes.map((s) => (<ProfileSavedRecipeCard key={s.id} savedRecipe={s} getSavedRecipes={getSavedRecipes} />))}
                                 </div>
 
-                            </div> 
-                        :
-                        menu === "my recipes" ?
-                            <div>
-                                <h3>My Recipes</h3>
-                                <div>
-                                {myRecipes.map((r)=>(<ProfileRecipeCard key={r.id} recipe={r} getMyRecipes={getCreatedRecipes}/>))}
-                                </div>
-                            </div> 
-                        :
-                            <div>
-                                <h3>My Comments</h3>
-                                {myComments.map((c)=>(<ProfileCommentCard key={c.id} comment={c} getMyComments={getComments}/>))}
                             </div>
+                            :
+                            menu === "my recipes" ?
+                                <div>
+                                    <h3 className="text-center">My Recipes</h3>
+                                    <div>
+                                        {myRecipes.map((r) => (<ProfileRecipeCard key={r.id} recipe={r} getMyRecipes={getCreatedRecipes} />))}
+                                    </div>
+                                </div>
+                                :
+                                <div>
+                                    <h3 className="text-center">My Comments</h3>
+                                    {myComments.map((c) => (<ProfileCommentCard key={c.id} comment={c} getMyComments={getComments} />))}
+                                </div>
                         }
                     </div>
 

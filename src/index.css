@@ -42,6 +42,7 @@ table {
 html{
   width: 108vw;
   overflow-x: hidden;
+  font-family: Proxima Nova,Helvetica,Arial,sans-serif;
 }
 body {
   margin: 0;
@@ -84,4 +85,12 @@ code {
     position: absolute;
     top: 16px;
     right: 16px;
+}
+
+main{
+  font-size: 1.125rem;
+}
+
+option:hover{
+  background-color: #86BA90;
 }
