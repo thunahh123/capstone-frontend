@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react"
 import { ResultPostCard } from "./ResultPostCard";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faUserTie } from "@fortawesome/free-solid-svg-icons";
+import secureLocalStorage from "react-secure-storage";
 
 export const Manage = function () {
     const [newIng, setNewIng] = useState("");
@@ -44,7 +47,7 @@ export const Manage = function () {
                             setNewIng("");
                         } setButtonPop(true);
                     }
-                    
+
                 );
         }
         catch (error) {
@@ -58,8 +61,8 @@ export const Manage = function () {
                 .then(res => res.json())
                 .then(
                     (result) => {
-                        let newUsers = [...result];
-                        setUsers(newUsers);
+                        //let newUsers = [...result];
+                        setUsers(result);
                         console.log(result);
                     })
         } catch (error) {
@@ -82,6 +85,63 @@ export const Manage = function () {
         // let filterUsers = users.filter((user) => (user.includes(userSearchString)));
         // setUsers(filterUsers);
 
+    }
+
+    //delete user
+    function deleteUser(id) {
+        try {
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/delete?session_key=${secureLocalStorage.getItem('session_key')}&user_id=${id}`,
+                {
+                    method: 'DELETE'
+                })
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        if (result.status === "success") {
+                            setMessage(result.message);
+                            getUsers();
+                        } else {
+                            setMessage(result.message);
+                        }
+
+                    });
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+
+    function becomeAdmin(id) {
+        try {
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/newAdmin`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "session_key": secureLocalStorage.getItem('session_key'),
+                    "user_id": id
+                })
+            })
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        console.log(result);
+                        if (result.status === "success") {
+                            setMessage(result.message);
+                            getUsers();
+                        }
+                        else {
+                            setMessage(result.message);
+
+                        }
+                        // setButtonPop(true);
+                    }
+
+                );
+        }
+        catch (error) {
+            console.error("Error:", error);
+        }
     }
 
 
@@ -113,7 +173,7 @@ export const Manage = function () {
                                 <th scope="col">ID</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Email</th>
-                                {/* <th scope="col">Last Login</th> */}
+                                <th scope="col">Last Login</th>
                                 <th scope="col">Account Created</th>
                                 <th scope="col">Is Admin?</th>
                                 <th scope="col">Recipes</th>
@@ -123,16 +183,16 @@ export const Manage = function () {
                         </thead>
                         <tbody>
                             {users.map((u) => (
-                                <tr key="u.id">
+                                <tr key={u.id}>
                                     <th scope="row">{u.id}</th>
                                     <td>{u.name}</td>
                                     <td>{u.email}</td>
-                                    {/* <td>{u.last_login}</td> */}
+                                    <td>{u.last_login ? new Date(u.last_login).toLocaleDateString() : "---"}</td>
                                     <td>{new Date(u.created_at).toLocaleDateString()}</td>
-                                    <td>{u.is_admin?<>&#x2713;</>:""}</td>
+                                    <td>{u.is_admin ? <>&#x2713;</> : ""}</td>
                                     <td>user.recipe_count</td>
                                     <td>user.comment_count</td>
-                                    <td className="d-flex flex-nowrap gap-2"><span>deleteButton</span> <span>adminButton</span></td>
+                                    <td className="d-flex flex-nowrap gap-4"><span onClick={() => deleteUser(u.id)}><FontAwesomeIcon icon={faTrash} title="delete user" /></span>{!u.is_admin?<span onClick={() => becomeAdmin(u.id)}><FontAwesomeIcon icon={faUserTie} title="add to admin" /></span>:<></>} </td>
                                 </tr>
                             ))}
                         </tbody>

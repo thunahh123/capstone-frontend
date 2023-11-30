@@ -94,3 +94,7 @@ main{
 option:hover{
   background-color: #86BA90;
 }
+
+.rot-r-90{
+  transform: rotate(90deg);
+}

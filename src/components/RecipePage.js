@@ -118,7 +118,7 @@ export const RecipePage = function () {
                 .then(res => res.json())
                 .then(
                     (result) => {
-                        let newComments = [...result];
+                        let newComments = structuredClone(result);
                         console.log(newComments);
                         setComments(newComments);
                     });
@@ -134,17 +134,21 @@ export const RecipePage = function () {
 
                 <h1 className="mx-auto text-center">{recipe.title}</h1>
                 {secureLocalStorage.getItem("is_admin") ?
-                    (recipe.featured ?
-                        <button onClick={() => { setFeaturedRecipe() }} className="btn btn-danger">Remove from featured</button>
-                        : <button onClick={() => { setFeaturedRecipe() }} className="btn btn-primary">Mark as featured</button>)
+                    <div className="my-auto">
+                        {recipe.featured ?
+                            <button onClick={() => { setFeaturedRecipe() }} className="btn btn-danger">Remove&nbsp;from&nbsp;featured</button>
+                            : <button onClick={() => { setFeaturedRecipe() }} className="btn btn-primary">Mark&nbsp;as&nbsp;featured</button>}
+                    </div>
                     :
                     <></>}
             </div>
             <div className="mx-5 my-3">
-                <p className="text-justify">{recipe.description}</p>
-                <div>
-                    <p>{recipe.user?.name}</p>
+                <div className="d-flex gap-2">
+                    <p className="fw-bold">{recipe.user?.name}</p>
+                    <p>{new Date(recipe.created_at).toLocaleDateString()}</p>
                 </div>
+                <p className="text-justify">{recipe.description}</p>
+
                 <div className="d-flex">
                     <div className="d-flex flex-column">
                         <span><strong>COOKING TIME</strong></span>
@@ -183,14 +187,14 @@ export const RecipePage = function () {
                 </div>
 
                 <div>
-                    <h2 className="text-primary">Comments<FontAwesomeIcon icon={faComment} /></h2>
+                    <h2 className="text-primary">Comments <FontAwesomeIcon icon={faComment} /></h2>
                     {/* ratings */}
                     <div><strong>Rate this recipe</strong></div>
                     {/* comment form */}
                     <div>
-                        <form className="col-6">
+                        <form className="col-6 d-flex flex-column row-gap-2">
                             <textarea className="form-control" placeholder="What do you think about this recipe?" cols="100" rows="5" type="text" value={newComment} onChange={(e) => { setNewComment(e.target.value) }}> </textarea>
-                            <button className="btn btn-primary" onClick={commentSubmit}>Post</button>
+                            <button className="btn btn-primary col-6 col-md-3 col-lg-2 col-xxl-1" onClick={commentSubmit}>Post</button>
                         </form>
                         {/* successfully post a comment notice */}
                         <ResultPostCard trigger={buttonPop} setTrigger={setButtonPop}>
@@ -201,15 +205,14 @@ export const RecipePage = function () {
                         </ResultPostCard>
                     </div>
                     {/* comments display  */}
-                    <div>
+                    <div className="d-flex flex-column">
                         {comments.map((c) => (
-                            <>
-                                <SingleCommentCard key={c.id} comment={c} recipe={recipe} />
-                            </>
+
+                            <SingleCommentCard key={c.id} comment={c} recipe={recipe} />
+
                         ))}
                     </div>
                 </div>
-                <div>Some recommeded recipes</div>
             </div>
 
         </div>

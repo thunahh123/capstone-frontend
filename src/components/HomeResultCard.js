@@ -2,7 +2,7 @@
 export const HomeResultCard = function (props) {
     console.log("HomeResultCard");
     return (
-        <div className="p-lg-2 col-12 col-lg-6 col-xxl-4">
+        <div className="p-lg-2 col-12 col-lg-6 col-xxl-3">
         <div className="bg-secondary rounded-5 px-3 py-1 my-2 d-flex d-lg-block gap-3 align-items-center h-100">
             <svg
                 className="bd-placeholder-img rounded-circle flex-shrink-0 my-2"

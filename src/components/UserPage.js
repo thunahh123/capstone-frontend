@@ -86,7 +86,7 @@ export const UserPage = function () {
                     <h4 className="col-12 py-3">Personal Infomation</h4>
                     <img className="mx-auto" src={myProfile} alt="profile picture" width="150" height="150"></img>
                     <div><strong>Email:</strong> {user.email}</div>
-                    <div><strong>Date created:</strong> {user.created_at}</div>
+                    <div><strong>Date created:</strong> {new Date(user.created_at).toLocaleDateString()}</div>
                     <div><strong>Last login:</strong> {user.last_login}</div>
                     <div><a href={`/user/update/email`}>Update Email</a></div>
                     <div><a href={`/user/update/password`}>Update Password</a></div>

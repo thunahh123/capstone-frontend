@@ -16,7 +16,7 @@ export const Search = function () {
   // use useEffect to run the function whenever ingredient changes
   useEffect(() => { getIngredients() }, [ingredient]);
   // use useEffect to run filter function everytime the ingredients list changes
-  useEffect(() => { filterRecipes() }, [ingredientList]);
+  useEffect(() => { filterRecipes() }, [ingredientList, minIng, maxIng, minTime, maxTime]);
 
   // this function fetch all ingredients matching with the input
   function getIngredients() {
@@ -63,15 +63,16 @@ export const Search = function () {
     }
     try {//"ingredient_ids": ingredientList.map((ingredient)=>(ingredient.id))
       let query = new URLSearchParams({
-        "min_cook_time": 0,
-        "max_cook_time": 9999,
-        "min_ingredients": 0,
-        "max_ingredients": 9999
+        "min_cook_time": minTime,
+        "max_cook_time": maxTime,
+        "min_ingredients": minIng,
+        "max_ingredients": maxIng
       });
       ingredientList.forEach(i => {
         query.append("ingredient_ids[]", i.id);
       });
       //return;
+      console.log(query.toString())
       fetch(`${process.env.REACT_APP_BACKEND_URL}/api/recipe/search?${query.toString()}`)
         .then(res => res.json())
         .then(
@@ -154,10 +155,10 @@ export const Search = function () {
                     <input className="rounded-2 border-white col-12" value={ingredient} autoComplete="off" type="text" placeholder="search..." onChange={(e) => setIngredient(e.target.value)} />
                     {searchResults.filter((item)=>!ingredientList.map(ing=>ing.id).includes(item.id)).length > 0 ? <div className="py-2">
                       {searchResults.filter((item)=>!ingredientList.map(ing=>ing.id).includes(item.id)).slice(0, 8).map((searchResult, index) =>
-                        <>
+                        <div key={searchResult.id}>
                           <option className="px-2 text-wrap" value={searchResult.name} key={searchResult.id} onClick={() => { addIngredient(searchResult.name, searchResult.id) }}>{searchResult.name}</option>
                           {index==searchResults.filter((item)=>!ingredientList.map(ing=>ing.id).includes(item.id)).slice(0, 8).length-1 ? <></> : <hr className="m-2"/>}
-                        </>
+                        </div>
                        
                       )}
                     </div> : <></>}

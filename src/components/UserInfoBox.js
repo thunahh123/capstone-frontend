@@ -38,15 +38,15 @@ export const UserInfoBox = function(props){
         <div className="col-2 d-flex flex-column justify-content-around">
             {props.username ? 
                 <>
-                    <span className="fw-semibold" >Signed in as: <a href={`/user/${props.username}`}>{props.username}</a></span>
-                    <div>
+                    <span className="fw-semibold text-center" >Signed in as: <a href={`/user/${props.username}`}>{props.username}</a></span>
+                    <div className="d-flex justify-content-center">
                         <button className='btn btn-danger' onClick={logout}>Log&nbsp;Out</button>
                     </div> 
                     
                 </>
                     :
                 <>
-                    <span className="fw-semibold">Not signed in </span>
+                    <span className="fw-semibold text-center">Not signed in </span>
                     <div className="w-60 d-flex justify-content-center">
                         <Link to="/login"><button className='btn btn-danger mx-2'>Sign&nbsp;In</button></Link>
                         <Link to="/register"><button className='btn btn-danger mx-2'>Register</button></Link>
