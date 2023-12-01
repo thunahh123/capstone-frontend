@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faTrash } from "@fortawesome/free-solid-svg-icons"
+import { faEdit, faPen, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { DeletePopup } from "./DeletePopup"
 import { useState } from "react"
 import secureLocalStorage from "react-secure-storage";
@@ -44,7 +44,7 @@ export const ProfileRecipeCard = function (props) {
                     ></rect>
                 </svg>
             </div>
-            <div className="d-flex flex-column ps-2">
+            <div className="d-flex flex-column ps-2 w-100">
                 <h2 className="fw-normal"><a className="link-underline link-underline-opacity-0" rel="noreferrer noopener" target="_blank" href={"/recipe/" + props.recipe.id}>{props.recipe.title}</a></h2>
                 <span>{props.recipe.description.length>200 ? props.recipe.description.split('').splice(0,197).join('')+"..." : props.recipe.description}</span>
                 <p>
@@ -52,12 +52,15 @@ export const ProfileRecipeCard = function (props) {
                         View details »
                     </a>
                 </p>
-                <p><FontAwesomeIcon onClick={() => setButtonPop(true)} icon={faTrash} /></p>
+                <div className="d-flex gap-3">
+                    <span title="Delete Recipe" className="" role="button"><FontAwesomeIcon onClick={() => setButtonPop(true)} icon={faTrash} /></span>
+                    <a title="Edit Recipe" className="" href={`/updateRecipe/${props.recipe.id}`}><FontAwesomeIcon icon={faEdit} /></a>
+                </div>
                 <DeletePopup trigger={buttonPop} setTrigger={setButtonPop}>
                     <p>Are you sure want to delete this?</p>
                     <div>
-                        <button className="btn btn-primary" onClick={()=>{deleteCreatedRecipe(props.recipe.id)}}>Yes</button>
-                        <button className="btn btn-primary" onClick={() => setButtonPop(false)} >No</button>
+                        <button className="btn btn-primary m-2" onClick={()=>{deleteCreatedRecipe(props.recipe.id)}}>Yes</button>
+                        <button className="btn btn-primary m-2" onClick={() => setButtonPop(false)} >No</button>
                     </div>
                 </DeletePopup>
             </div>

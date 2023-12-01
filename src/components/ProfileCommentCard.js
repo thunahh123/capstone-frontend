@@ -32,8 +32,8 @@ export const ProfileCommentCard = function (props) {
                 <DeletePopup trigger={buttonPop} setTrigger={setButtonPop}>
                     <p>Are you sure want to delete this?</p>
                     <div>
-                        <button className="btn btn-primary" onClick={()=>{deleteCreatedComment(props.comment.id)}}>Yes</button>
-                        <button className="btn btn-primary" onClick={() => setButtonPop(false)} >No</button>
+                        <button className="btn btn-primary m-2" onClick={()=>{deleteCreatedComment(props.comment.id)}}>Yes</button>
+                        <button className="btn btn-primary m-2" onClick={() => setButtonPop(false)} >No</button>
                     </div>
                 </DeletePopup>
             </div>

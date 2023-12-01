@@ -1,4 +1,4 @@
-import { faComment } from "@fortawesome/free-solid-svg-icons";
+import { faBookmark, faComment } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
@@ -7,7 +7,7 @@ import { ResultPostCard } from "./ResultPostCard";
 import { SingleCommentCard } from "./SingleCommentCard";
 
 export const RecipePage = function () {
-    const [recipe, setRecipe] = useState({});
+    const [recipe, setRecipe] = useState(null);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
     const [buttonPop, setButtonPop] = useState(false);
@@ -23,14 +23,19 @@ export const RecipePage = function () {
                 .then(res => res.json())
                 .then(
                     (result) => {
-                        setRecipe(result);
+                        if(result.status==="success"){
+                            console.log(result.content);
+                            setRecipe(result.content);
+                        }else{
+                            setPopupMess(result.message);
+                            setButtonPop(true);
+                            setPopupGood(false);
+                        }
                     });
         } catch (error) {
             console.error("Error:", error);
         }
     }
-
-    console.log(comments);
 
     //this function add/remove featured recipe
     function setFeaturedRecipe() {
@@ -49,9 +54,8 @@ export const RecipePage = function () {
                 .then(
                     (result) => {
                         if (result.status === "success") {
-                            console.log(result.message);
                             getRecipe();
-
+                            console.log(result.message);
                         } else {
                             console.log(result.message);
                         }
@@ -87,18 +91,16 @@ export const RecipePage = function () {
                 .then(
                     (result) => {
                         if (result.status === "success") {
-                            // console.log(result.message);
                             setPopupGood(true);
                             setNewComment("");
                             getComments();
+                            setTimeout(()=>{console.log("closing popup");setButtonPop(false)}, 1500);
                         } else {
-                            // console.log(result.message);
                             setPopupGood(false);
                         }
                         setPopupMess(result.message);
                     })
         } catch (error) {
-            console.error("Error:", error);
             setPopupMess("Error occurred.");
             setPopupGood(false);
         }
@@ -119,7 +121,6 @@ export const RecipePage = function () {
                 .then(
                     (result) => {
                         let newComments = structuredClone(result);
-                        console.log(newComments);
                         setComments(newComments);
                     });
         } catch (error) {
@@ -127,20 +128,84 @@ export const RecipePage = function () {
         }
     }
 
+    //add saved recipe
+    function addSavedRecipe() {
+        try {
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/addSavedRecipe`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "session_key": secureLocalStorage.getItem("session_key"),
+                    "recipe_id": params.id
+                })
+            })
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        if (result.status === "success") {
+                            getRecipe();
+                            console.log(result.message);
+                        }
+                        else {
+                            console.log(result.message);
+                        }
+                    }
+                );
+        }
+        catch (error) {
+            console.error("Error:", error);
+        }
+    }
+
+    // remove saved recipe
+    function removeSavedRecipe() {
+        try {
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/deleteSavedRecipe?session_key=${secureLocalStorage.getItem('session_key')}&recipe_id=${params.id}`,
+                { method: 'DELETE' })
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        getRecipe();
+                        console.log(result.message);
+                    });
+        } catch (error) {
+            console.error("Error:", error);
+        }
+
+    }
+
 
     return (
         <div className="col-8 border border-black mx-auto rounded-4 m-5 bg-dark">
-            <div className="d-flex col-10 mx-auto my-2">
+            {recipe?
+            <>
+            <div className="d-flex pt-3">
+                <div className="col" />
+                <h1 className="col mx-auto text-center">{recipe.title}</h1>
+                <div className="col d-flex justify-content-end">
+                    <div className="col-10 d-flex flex-column my-2 gap-2">
+                        <div>
+                            {recipe.saved?.includes(secureLocalStorage.getItem('user_id')) ?
+                                <button onClick={() => removeSavedRecipe()} className="btn btn-danger"><FontAwesomeIcon icon={faBookmark} />&nbsp;Unsave</button>
+                                :
+                                <button onClick={() => addSavedRecipe()} className="btn btn-primary"><FontAwesomeIcon icon={faBookmark} />&nbsp;Save</button>
+                            }
+                        </div>
 
-                <h1 className="mx-auto text-center">{recipe.title}</h1>
-                {secureLocalStorage.getItem("is_admin") ?
-                    <div className="my-auto">
-                        {recipe.featured ?
-                            <button onClick={() => { setFeaturedRecipe() }} className="btn btn-danger">Remove&nbsp;from&nbsp;featured</button>
-                            : <button onClick={() => { setFeaturedRecipe() }} className="btn btn-primary">Mark&nbsp;as&nbsp;featured</button>}
+                        {/* <span><FontAwesomeIcon icon={faBookmark} onClick={() => addSavedRecipe()} /></span> */}
+                        {secureLocalStorage.getItem("is_admin") ?
+                            <div className="my-auto">
+                                {recipe.featured ?
+                                    <button onClick={() => { setFeaturedRecipe() }} className="btn btn-danger">Remove&nbsp;from&nbsp;featured</button>
+                                    : <button onClick={() => { setFeaturedRecipe() }} className="btn btn-primary">Mark&nbsp;as&nbsp;featured</button>}
+                            </div>
+                            :
+                            <></>}
                     </div>
-                    :
-                    <></>}
+
+                </div>
             </div>
             <div className="mx-5 my-3">
                 <div className="d-flex gap-2">
@@ -160,13 +225,13 @@ export const RecipePage = function () {
                     </div>
                 </div>
                 <div className="d-flex">
-                    <div>
+                    <div className="col-3">
                         <h5><strong>Ingredients:</strong></h5>
                         <div >
                             {Object.hasOwn(recipe, "recipe_ingredients") ?
 
                                 <ul className=" mx-auto list-unstyled" >{recipe.recipe_ingredients.map((i, index) => (
-                                    <li key={index}>{i.ingredient.name}</li>
+                                    <li key={index}>{i.quantity} {i.unit.abbr == "none" ? "" : i.unit.abbr}  {i.ingredient.name} </li>
                                 ))}
                                 </ul> : <></>
                             }
@@ -207,14 +272,13 @@ export const RecipePage = function () {
                     {/* comments display  */}
                     <div className="d-flex flex-column">
                         {comments.map((c) => (
-
-                            <SingleCommentCard key={c.id} comment={c} recipe={recipe} />
-
+                            <SingleCommentCard key={c.id} comment={c} recipe={recipe} getComments={getComments}/>
                         ))}
                     </div>
                 </div>
             </div>
-
+            </>
+            :<>Loading...</>}
         </div>
     )
 }

@@ -20,9 +20,7 @@ export const UserInfoBox = function(props){
             .then(res=>res.json())
             .then(
                 (result)=>{
-                    secureLocalStorage.removeItem("session_key");
-                    secureLocalStorage.removeItem("username");
-                    secureLocalStorage.removeItem("is_admin");
+                    secureLocalStorage.clear()
                     props.setUsername(null);
                     
             });

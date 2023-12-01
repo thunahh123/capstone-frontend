@@ -13,7 +13,6 @@ export const UserPage = function () {
     const [savedRecipes, setSavedRecipes] = useState([]);
     const [myRecipes, setMyRecipes] = useState([]);
     const [myComments, setMyComments] = useState([]);
-    const [modalShow, setModalShow] = useState(false);
     let params = useParams();
 
     //useEffect function

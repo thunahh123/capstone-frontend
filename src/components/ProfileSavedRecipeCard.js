@@ -58,8 +58,8 @@ export const ProfileSavedRecipeCard = function (props) {
                 <DeletePopup trigger={buttonPop} setTrigger={setButtonPop}>
                     <p>Are you sure want to delete this?</p>
                     <div>
-                        <button className="btn btn-primary" onClick={()=>{deleteSavedRecipe(props.savedRecipe.id)}}>Yes</button>
-                        <button className="btn btn-primary" onClick={()=>{setButtonPop(false)}} >No</button>
+                        <button className="btn btn-primary m-2" onClick={()=>{deleteSavedRecipe(props.savedRecipe.id)}}>Yes</button>
+                        <button className="btn btn-primary m-2" onClick={()=>{setButtonPop(false)}} >No</button>
                     </div>
                 </DeletePopup>
             </div>

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
 import { ResultPostCard } from "./ResultPostCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faUserTie } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faTrash, faUserTie } from "@fortawesome/free-solid-svg-icons";
 import secureLocalStorage from "react-secure-storage";
+import { DeletePopup } from "./DeletePopup";
 
 export const Manage = function () {
     const [newIng, setNewIng] = useState("");
@@ -11,11 +12,10 @@ export const Manage = function () {
     const [recipeSearchString, setRecipeSearchString] = useState("");
     const [userSearchString, setUserSearchString] = useState("");
     const [users, setUsers] = useState([]);
-    //const [usersFiltered, setUsersFiltered] = useState([]);
-    //const [recipes, setRecipes] = useState([]);
-
+    const [deletePop, setDeletePop] = useState(false);
+    const [userToDelete, setUserToDelete] = useState(null);
     useEffect(getUsers, []);
-    useEffect(filterUsers, [userSearchString]);
+    // useEffect(filterUsers, [userSearchString]);
     useEffect(getRecipes, [recipeSearchString]);
 
     //function add new ing
@@ -39,13 +39,10 @@ export const Manage = function () {
                 .then(
                     (result) => {
                         if (result.status === "success") {
-                            setMessage(result.message);
                             setNewIng("");
                         }
-                        else {
-                            setMessage(result.message);
-                            setNewIng("");
-                        } setButtonPop(true);
+                        setMessage(result.message);
+                        setButtonPop(true);
                     }
 
                 );
@@ -61,7 +58,6 @@ export const Manage = function () {
                 .then(res => res.json())
                 .then(
                     (result) => {
-                        //let newUsers = [...result];
                         setUsers(result);
                         console.log(result);
                     })
@@ -77,28 +73,25 @@ export const Manage = function () {
         }
     }
 
-    function filterUsers(userSearchString) {
-        // if (userSearchString.length <= 0) {
-        //     //setUsers([]);
-        //     return;
-        // } 
-        // let filterUsers = users.filter((user) => (user.includes(userSearchString)));
-        // setUsers(filterUsers);
+    // function filterUsers(userSearchString) {
 
-    }
+    // }
 
     //delete user
-    function deleteUser(id) {
+    function confirmDeleteUser() {
         try {
-            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/delete?session_key=${secureLocalStorage.getItem('session_key')}&user_id=${id}`,
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/delete?session_key=${secureLocalStorage.getItem('session_key')}&user_id=${userToDelete}`,
                 {
                     method: 'DELETE'
                 })
                 .then(res => res.json())
                 .then(
                     (result) => {
+                        console.log(result);
                         if (result.status === "success") {
+
                             setMessage(result.message);
+                            setButtonPop(true);
                             getUsers();
                         } else {
                             setMessage(result.message);
@@ -128,6 +121,7 @@ export const Manage = function () {
                         console.log(result);
                         if (result.status === "success") {
                             setMessage(result.message);
+                            
                             getUsers();
                         }
                         else {
@@ -189,10 +183,21 @@ export const Manage = function () {
                                     <td>{u.email}</td>
                                     <td>{u.last_login ? new Date(u.last_login).toLocaleDateString() : "---"}</td>
                                     <td>{new Date(u.created_at).toLocaleDateString()}</td>
-                                    <td>{u.is_admin ? <>&#x2713;</> : ""}</td>
+                                    <td>{u.is_admin ? <><FontAwesomeIcon icon={faCheck} title="admin check" className="text-primary" /></> : ""}</td>
                                     <td>user.recipe_count</td>
                                     <td>user.comment_count</td>
-                                    <td className="d-flex flex-nowrap gap-4"><span onClick={() => deleteUser(u.id)}><FontAwesomeIcon icon={faTrash} title="delete user" /></span>{!u.is_admin?<span onClick={() => becomeAdmin(u.id)}><FontAwesomeIcon icon={faUserTie} title="add to admin" /></span>:<></>} </td>
+                                    <td className="d-flex flex-nowrap gap-4 justify-content-center">{u.id}
+                                        {!u.is_admin ? <span onClick={() =>{ setUserToDelete(u.id); setDeletePop(true);} }><FontAwesomeIcon icon={faTrash} title="delete user" /></span> : <span className="text-center">---</span>}
+                                        <DeletePopup trigger={deletePop} setTrigger={setDeletePop}>
+                                            <p>Are you sure want to delete user with id {userToDelete}?</p>
+                                            <div>
+                                                <button className="btn btn-primary m-2" onClick={() => { confirmDeleteUser() }}>Yes</button>
+                                                <button className="btn btn-primary m-2" onClick={() => setDeletePop(false)} >No</button>
+                                            </div>
+                                        </DeletePopup>
+                                        {!u.is_admin ? <span onClick={() => becomeAdmin(u.id)}><FontAwesomeIcon icon={faUserTie} title="add to admin" /></span>
+                                            : <></>}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

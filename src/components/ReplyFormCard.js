@@ -6,12 +6,12 @@ import { ResultPostCard } from "./ResultPostCard";
 export const ReplyFormCard = function (props) {
     const [newReply, setNewReply] = useState("");
     const [buttonPop, setButtonPop] = useState(false);
-    const [popupMess, setPopupMess] = useState("");
-    const [popupGood, setPopupGood] = useState(true);
+    const [message, setMessage] = useState("");
+    
     function addNewReply() {
         if (newReply.trim().length <= 0) {
-            setPopupGood(false);
-            setPopupMess("Reply must be longer.")
+            setMessage("Reply must be longer.")
+            setButtonPop(true);            
             return;
         }
         try {
@@ -27,28 +27,28 @@ export const ReplyFormCard = function (props) {
                     "content": newReply
                 })
             })
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        if (result.status === "success") {
-                            setPopupGood(true);
-                            setNewReply("");
-                        } else {
-                            setPopupGood(false);
-                        }
-                        setPopupMess(result.message);
-                    })
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    if (result.status === "success") {
+                        setNewReply("");
+                        props.getComments()
+                    }
+                    setMessage(result.message);
+                    setButtonPop(true);
+                    setTimeout(()=>{props.endReply();}, 1500);
+                    
+                })
         } catch (error) {
             console.error("Error:", error);
-            setPopupMess("Error occurred.");
-            setPopupGood(false);
+            setMessage("Error occurred.");
+            setButtonPop(false);
         }
 
     }
     function replySubmit(e) {
         e.preventDefault();
         addNewReply();
-        setButtonPop(true);
     }
 
     return (
@@ -59,9 +59,9 @@ export const ReplyFormCard = function (props) {
             </form>
             {/* successfully post a comment notice */}
             <ResultPostCard trigger={buttonPop} setTrigger={setButtonPop}>
-                <p className={popupGood ? "" : "text-danger"}>{popupMess}</p>
+                <p className={buttonPop ? "" : "text-danger"}>{message}</p>
                 <div>
-                    <button className="btn btn-primary" onClick={() => setButtonPop(false)} >OK</button>
+                    <button className="btn btn-primary" onClick={() => {setButtonPop(false); props.endReply();}} >OK</button>
                 </div>
             </ResultPostCard>
         </div>

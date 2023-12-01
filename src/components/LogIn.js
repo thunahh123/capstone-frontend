@@ -26,6 +26,7 @@ export const LogIn = function(params){
                         secureLocalStorage.setItem("session_key", result.session_key);
                         secureLocalStorage.setItem("username", logUsername);
                         secureLocalStorage.setItem("is_admin", result.is_admin);
+                        secureLocalStorage.setItem("user_id", result.user_id)
                         params.setUsername(logUsername);
                         navigate("/");
                     }else{
