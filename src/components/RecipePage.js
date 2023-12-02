@@ -9,6 +9,7 @@ import { SingleCommentCard } from "./SingleCommentCard";
 import { DeletePopup } from "./DeletePopup";
 
 export const RecipePage = function (props) {
+    const [loading, setLoading] = useState(true);
     const [recipe, setRecipe] = useState(null);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
@@ -224,8 +225,7 @@ export const RecipePage = function (props) {
                     (result) => {
                         if (result.status === "success") {
                             console.log(result)
-                            // setButtonPop(true);
-                            // setTimeout(()=>{redirect(`/recipe/${params.id}`)})
+  
                             getRecipe();
                         }
                         else {
@@ -240,13 +240,16 @@ export const RecipePage = function (props) {
 
     }
 
-    //useEffect();
-
 
     return (
-        <div className="col-10 col-lg-8 border border-black mx-auto rounded-4 m-5 bg-dark">
+        <>
+            {loading ? 
+            <div>Loading...</div>
+        :
 
-            {recipe ?
+        
+       
+        <div className="col-10 col-lg-8 border border-black mx-auto rounded-4 m-5 bg-dark">
                 <>
                     <div className="d-flex pt-3">
                         <div className="d-flex flex-column align-items-center col">
@@ -395,7 +398,7 @@ export const RecipePage = function (props) {
                         </div>
                     </div>
                 </>
-                : <>Loading...</>}
-        </div>
-    )
+        </div>}
+        </>
+    ) 
 }

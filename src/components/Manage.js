@@ -340,14 +340,6 @@ export const Manage = function () {
                                             </div>
                                         </DeletePopup>
                                     </td>
-                                    {/* <td className="d-flex flex-nowrap gap-4 justify-content-center">
-                                        {!u.is_admin ? <span onClick={() =>{ setUserToDelete(u.id); setDeletePop(true);} }><FontAwesomeIcon icon={faTrash} title="delete user" /></span> : <span className="text-center">---</span>}
-
-                                        
-
-                                        {!u.is_admin ? <span onClick={() => becomeAdmin(u.id)}><FontAwesomeIcon icon={faUserTie} title="add to admin" /></span>
-                                            : <></>}
-                                    </td> */}
                                 </tr>
                             ))}
                         </tbody>

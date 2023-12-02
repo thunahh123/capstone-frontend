@@ -5,7 +5,6 @@ import {Main} from './components/Main';
 import {Footer} from './components/Footer';
 import secureLocalStorage from 'react-secure-storage';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './output.css'
 
 
 
