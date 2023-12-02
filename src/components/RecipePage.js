@@ -275,7 +275,7 @@ export const RecipePage = function (props) {
                                     </div>
                                     :
                                     <></>}
-                                {secureLocalStorage.getItem("is_admin") || secureLocalStorage.get_item("user_id") === recipe.author_id ?
+                                {secureLocalStorage.getItem("is_admin") || secureLocalStorage.getItem("user_id") === recipe.author_id ?
                                     <div>
                                         <a className="btn btn-primary m-1" href={`/updateRecipe/${recipe.id}`}>Edit</a>
                                         <button className="btn btn-primary m-1" onClick={() => { setDeletePop(true) }}>Delete</button>
