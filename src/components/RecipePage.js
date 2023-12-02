@@ -20,12 +20,13 @@ export const RecipePage = function (props) {
     const [myRating, setMyRating] = useState(-1);
     const [newRating, setNewRating] = useState("5");
     const [hovered, setHovered] = useState(0);
-    const [avgRating, setAvgRating] = useState(0);
     const navigate = useNavigate();
     let params = useParams();
     useEffect(() => { getRecipe() }, [params.id]);
     useEffect(() => { getComments() }, [recipe]);
     useEffect(() => { sendRating() }, [newRating])
+
+    console.log(newRating);
 
     //this function fetch the recipe
     function getRecipe() {
@@ -38,9 +39,9 @@ export const RecipePage = function (props) {
                             console.log(result.content);
                             setRecipe(result.content);
                             let rating = result.content?.ratings?.filter(i => i.user_id === secureLocalStorage.getItem('user_id'))[0]?.score ?? -1;
+                            console.log("score = " + rating)
                             setMyRating(rating);
                             setNewRating(rating);
-                            setAvgRating(result.avg_rating);
                             setLoading(false);
                         } else {
                             setPopupMess(result.message);
@@ -226,7 +227,7 @@ export const RecipePage = function (props) {
                     (result) => {
                         if (result.status === "success") {
                             console.log(result)
-  
+
                             getRecipe();
                         }
                         else {
@@ -244,162 +245,159 @@ export const RecipePage = function (props) {
 
     return (
         <>
-            {loading ? 
-            <div>Loading...</div>
-        :
+            {loading ?
+                <div>Loading...</div>
+                :
 
-        
-       
-        <div className="col-10 col-lg-8 border border-black mx-auto rounded-4 m-5 bg-dark">
-                <>
-                    <div className="d-flex pt-3">
-                        <div className="d-flex flex-column align-items-center col">
-                            <h1 className="mx-auto text-center">{recipe.title}</h1>
-                            <span className="my-3">{recipe.avg_rating}<FontAwesomeIcon icon={faStar} /> ({recipe.ratings?.length}&nbsp;ratings)</span>
-                        </div>
-                        <div className="col d-flex justify-content-end">
-                            <div className="col-10 d-flex flex-column my-2 gap-2">
-                                <div>
-                                    {recipe.saved?.includes(secureLocalStorage.getItem('user_id')) ?
-                                        <button onClick={() => removeSavedRecipe()} className="btn btn-danger"><FontAwesomeIcon icon={faBookmark} />&nbsp;Unsave</button>
+
+
+                <div className="col-10 col-lg-8 border border-black mx-auto rounded-4 m-5 bg-dark">
+                    <>
+                        <div className="d-flex pt-3">
+                            <div className="d-flex flex-column align-items-center col">
+                                <h1 className="mx-auto text-center">{recipe.title}</h1>
+                                <span className="my-3">{recipe.avg_rating}<FontAwesomeIcon icon={faStar} /> ({recipe.ratings?.length}&nbsp;ratings)</span>
+                            </div>
+                            <div className="col d-flex justify-content-end">
+                                <div className="col-10 d-flex flex-column my-2 gap-2">
+                                    {secureLocalStorage.getItem('username') ?
+                                        <div>
+                                            {recipe.saved?.includes(secureLocalStorage.getItem('user_id')) ?
+                                                <button onClick={() => removeSavedRecipe()} className="btn btn-danger"><FontAwesomeIcon icon={faBookmark} />&nbsp;Unsave</button>
+                                                :
+                                                <button onClick={() => addSavedRecipe()} className="btn btn-primary"><FontAwesomeIcon icon={faBookmark} />&nbsp;Save</button>
+                                            }
+                                        </div>: <></>
+                                    }
+
+
+                                    {/* <span><FontAwesomeIcon icon={faBookmark} onClick={() => addSavedRecipe()} /></span> */}
+                                    {secureLocalStorage.getItem("is_admin") ?
+                                        <div className="my-auto">
+                                            {recipe.featured ?
+                                                <button onClick={() => { setFeaturedRecipe() }} className="btn btn-danger">Remove from featured</button>
+                                                : <button onClick={() => { setFeaturedRecipe() }} className="btn btn-primary">Mark&nbsp;as&nbsp;featured</button>}
+                                        </div>
                                         :
-                                        <button onClick={() => addSavedRecipe()} className="btn btn-primary"><FontAwesomeIcon icon={faBookmark} />&nbsp;Save</button>
-                                    }
+                                        <></>}
+                                    {secureLocalStorage.getItem("is_admin") || secureLocalStorage.getItem("user_id") === recipe.author_id ?
+                                        <div>
+                                            <a className="btn btn-primary m-1" href={`/updateRecipe/${recipe.id}`}>Edit</a>
+                                            <button className="btn btn-primary m-1" onClick={() => { setDeletePop(true) }}>Delete</button>
+                                        </div>
+                                        : <></>}
                                 </div>
-
-                                {/* <span><FontAwesomeIcon icon={faBookmark} onClick={() => addSavedRecipe()} /></span> */}
-                                {secureLocalStorage.getItem("is_admin") ?
-                                    <div className="my-auto">
-                                        {recipe.featured ?
-                                            <button onClick={() => { setFeaturedRecipe() }} className="btn btn-danger">Remove from featured</button>
-                                            : <button onClick={() => { setFeaturedRecipe() }} className="btn btn-primary">Mark&nbsp;as&nbsp;featured</button>}
-                                    </div>
-                                    :
-                                    <></>}
-                                {secureLocalStorage.getItem("is_admin") || secureLocalStorage.getItem("user_id") === recipe.author_id ?
+                                <DeletePopup trigger={deletePop} setTrigger={setDeletePop}>
+                                    <p>Are you sure want to delete this ?</p>
                                     <div>
-                                        <a className="btn btn-primary m-1" href={`/updateRecipe/${recipe.id}`}>Edit</a>
-                                        <button className="btn btn-primary m-1" onClick={() => { setDeletePop(true) }}>Delete</button>
+                                        <button className="btn btn-primary m-2" onClick={() => { deleteRecipe() }}>Yes</button>
+                                        <button className="btn btn-primary m-2" onClick={() => setDeletePop(false)} >No</button>
                                     </div>
-                                    : <></>}
+                                </DeletePopup>
                             </div>
-                            <DeletePopup trigger={deletePop} setTrigger={setDeletePop}>
-                                <p>Are you sure want to delete this ?</p>
+                        </div>
+                        <div className="mx-5 my-3">
+                            <div className="d-flex gap-2">
+                                <p className="fw-bold"><a href={`/user/${recipe.user?.name}`}>{recipe.user?.name}</a></p>
+                                <p>{new Date(recipe.created_at).toLocaleDateString()}</p>
+                            </div>
+                            <p className="text-justify col-xxl-6">{recipe.description}</p>
+
+                            <div className="d-flex">
+                                <div className="d-flex flex-column">
+                                    <span><strong>COOKING TIME</strong></span>
+                                    <span>{recipe.cooking_time_in_mins} mins</span>
+                                </div>
+                                <div className="d-flex flex-column mx-5">
+                                    <span><strong>SERVINGS</strong></span>
+                                    <span>{recipe.serving}</span>
+                                </div>
+                            </div>
+                            <div className="d-flex">
+                                <div className="col-3">
+                                    <h5><strong>Ingredients:</strong></h5>
+                                    <div >
+                                        {Object.hasOwn(recipe, "recipe_ingredients") ?
+
+                                            <ul className=" mx-auto list-unstyled" >{recipe.recipe_ingredients.map((i, index) => (
+                                                <li key={index}>{i.quantity} {i.unit.abbr === "none" ? "" : i.unit.abbr}  {i.ingredient.name} </li>
+                                            ))}
+                                            </ul> : <></>
+                                        }
+                                    </div>
+                                </div>
                                 <div>
-                                    <button className="btn btn-primary m-2" onClick={() => { deleteRecipe() }}>Yes</button>
-                                    <button className="btn btn-primary m-2" onClick={() => setDeletePop(false)} >No</button>
-                                </div>
-                            </DeletePopup>
-                        </div>
-                    </div>
-                    <div className="mx-5 my-3">
-                        <div className="d-flex gap-2">
-                            <p className="fw-bold"><a href={`/user/${recipe.user?.name}`}>{recipe.user?.name}</a></p>
-                            <p>{new Date(recipe.created_at).toLocaleDateString()}</p>
-                        </div>
-                        <p className="text-justify col-xxl-6">{recipe.description}</p>
+                                    <h5 className="text-center"><strong>Instructions:</strong></h5>
+                                    <div >
+                                        {Object.hasOwn(recipe, "direction") ?
 
-                        <div className="d-flex">
-                            <div className="d-flex flex-column">
-                                <span><strong>COOKING TIME</strong></span>
-                                <span>{recipe.cooking_time_in_mins} mins</span>
-                            </div>
-                            <div className="d-flex flex-column mx-5">
-                                <span><strong>SERVINGS</strong></span>
-                                <span>{recipe.serving}</span>
-                            </div>
-                        </div>
-                        <div className="d-flex">
-                            <div className="col-3">
-                                <h5><strong>Ingredients:</strong></h5>
-                                <div >
-                                    {Object.hasOwn(recipe, "recipe_ingredients") ?
-
-                                        <ul className=" mx-auto list-unstyled" >{recipe.recipe_ingredients.map((i, index) => (
-                                            <li key={index}>{i.quantity} {i.unit.abbr === "none" ? "" : i.unit.abbr}  {i.ingredient.name} </li>
-                                        ))}
-                                        </ul> : <></>
-                                    }
-                                </div>
-                            </div>
-                            <div>
-                                <h5 className="text-center"><strong>Instructions:</strong></h5>
-                                <div >
-                                    {Object.hasOwn(recipe, "direction") ?
-
-                                        <ol className="col-8 mx-auto" >{recipe.direction.map((i, index) => (
-                                            <li key={index}>{i}</li>
-                                        ))}
-                                        </ol> : <></>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h2 className="text-primary">Comments <FontAwesomeIcon icon={faComment} /></h2>
-                            {/* ratings */}
-                            <div className="d-flex gap-3">
-                                <strong>Rate this recipe: </strong>
-                                <div className="col">
-                                    {/* <select value={newRating} onChange={e => setNewRating(e.target.value)}>
-                                        <option value="-1">---</option>
-                                        <option value="1">1☆</option>
-                                        <option value="2">2☆</option>
-                                        <option value="3">3☆</option>
-                                        <option value="4">4☆</option>
-                                        <option value="5">5☆</option>
-                                    </select> */}
-                                    <div className="rating">
-                                        <label onMouseEnter={()=>{setHovered(1)}} onMouseLeave={()=>{setHovered(0)}}>
-                                            <input className="visually-hidden" type="radio" name="rating" value="1" id="1" onChange={e =>{e.preventDefault(); setNewRating(e.target.value)}} checked={newRating == "1"} />
-                                            <FontAwesomeIcon icon={(hovered>=1 || hovered<1&&newRating>=1) ? faStar : faStarR}/>
-                                        </label>
-                                        <label onMouseEnter={()=>{setHovered(2)}} onMouseLeave={()=>{setHovered(0)}}>
-                                            <input className="visually-hidden" type="radio" name="rating" value="2" id="2" onChange={e =>{e.preventDefault(); setNewRating(e.target.value)}} checked={newRating == "2"} />
-                                            <FontAwesomeIcon icon={(hovered>=2 || hovered<1&&newRating>=2) ? faStar : faStarR}/>
-                                        </label>
-                                        <label onMouseEnter={()=>{setHovered(3)}} onMouseLeave={()=>{setHovered(0)}}>
-                                            <input className="visually-hidden" type="radio" name="rating" value="3" id="3" onChange={e =>{e.preventDefault(); setNewRating(e.target.value)}} checked={newRating == "3"} />
-                                            <FontAwesomeIcon icon={(hovered>=3 || hovered<1&&newRating>=3) ? faStar : faStarR}/>
-                                        </label>
-                                        <label onMouseEnter={()=>{setHovered(4)}} onMouseLeave={()=>{setHovered(0)}}>
-                                            <input className="visually-hidden" type="radio" name="rating" value="4" id="4" onChange={e =>{e.preventDefault(); setNewRating(e.target.value)}} checked={newRating == "4"} />
-                                            <FontAwesomeIcon icon={(hovered>=4 || hovered<1&&newRating>=4) ? faStar : faStarR}/>
-                                        </label>
-                                        <label onMouseEnter={()=>{setHovered(5)}} onMouseLeave={()=>{setHovered(0)}}>
-                                            <input className="visually-hidden" type="radio" name="rating" value="5" id="5" onChange={e =>{e.preventDefault(); setNewRating(e.target.value)}} checked={newRating == "5"} />
-                                            <FontAwesomeIcon icon={(hovered>=5 || hovered<1&&newRating>=5) ? faStar : faStarR}/>
-                                        </label>
+                                            <ol className="col-8 mx-auto" >{recipe.direction.map((i, index) => (
+                                                <li key={index}>{i}</li>
+                                            ))}
+                                            </ol> : <></>
+                                        }
                                     </div>
-                                    {/* {newRating !== myRating ? sendRating} */}
-                                    {/* {newRating !== myRating ? <button className="btn btn-primary" onClick={sendRating}>Save Rating</button> : <></>} */}
                                 </div>
                             </div>
-                            {/* comment form */}
+
                             <div>
-                                <form className="col-6 d-flex flex-column row-gap-2">
-                                    <textarea className="form-control" placeholder="What do you think about this recipe?" cols="100" rows="5" type="text" value={newComment} onChange={(e) => { setNewComment(e.target.value) }}> </textarea>
-                                    <button className="btn btn-primary col-6 col-md-3 col-lg-2 col-xxl-1" onClick={commentSubmit}>Post</button>
-                                </form>
-                                {/* successfully post a comment notice */}
-                                <ResultPostCard trigger={buttonPop} setTrigger={setButtonPop}>
-                                    <p className={popupGood ? "" : "text-danger"}>{popupMess}</p>
-                                    <div>
-                                        <button className="btn btn-primary" onClick={() => setButtonPop(false)} >OK</button>
-                                    </div>
-                                </ResultPostCard>
-                            </div>
-                            {/* comments display  */}
-                            <div className="d-flex flex-column">
-                                {comments.map((c) => (
-                                    <SingleCommentCard key={c.id} comment={c} recipe={recipe} getComments={getComments} />
-                                ))}
+                                <h2 className="text-primary">Comments <FontAwesomeIcon icon={faComment} /></h2>
+                                {/* ratings */}
+                                {secureLocalStorage.getItem('username') ?
+                                    <>
+                                        <div className="d-flex gap-3">
+                                            <strong>Rate this recipe: </strong>
+                                            <div className="col">
+                                                <div className="rating">
+                                                    <label onMouseEnter={() => { setHovered(1) }} onMouseLeave={() => { setHovered(0) }}>
+                                                        <input className="visually-hidden" type="radio" name="rating" value="1" id="1" onChange={e => { e.preventDefault(); setNewRating(e.target.value) }} checked={newRating === "1"} />
+                                                        <FontAwesomeIcon icon={(hovered >= 1 || (hovered < 1 && newRating >= 1)) ? faStar : faStarR} />
+                                                    </label>
+                                                    <label onMouseEnter={() => { setHovered(2) }} onMouseLeave={() => { setHovered(0) }}>
+                                                        <input className="visually-hidden" type="radio" name="rating" value="2" id="2" onChange={e => { e.preventDefault(); setNewRating(e.target.value) }} checked={newRating === "2"} />
+                                                        <FontAwesomeIcon icon={(hovered >= 2 || (hovered < 1 && newRating >= 2)) ? faStar : faStarR} />
+                                                    </label>
+                                                    <label onMouseEnter={() => { setHovered(3) }} onMouseLeave={() => { setHovered(0) }}>
+                                                        <input className="visually-hidden" type="radio" name="rating" value="3" id="3" onChange={e => { e.preventDefault(); setNewRating(e.target.value) }} checked={newRating === "3"} />
+                                                        <FontAwesomeIcon icon={(hovered >= 3 || (hovered < 1 && newRating >= 3)) ? faStar : faStarR} />
+                                                    </label>
+                                                    <label onMouseEnter={() => { setHovered(4) }} onMouseLeave={() => { setHovered(0) }}>
+                                                        <input className="visually-hidden" type="radio" name="rating" value="4" id="4" onChange={e => { e.preventDefault(); setNewRating(e.target.value) }} checked={newRating === "4"} />
+                                                        <FontAwesomeIcon icon={(hovered >= 4 || (hovered < 1 && newRating >= 4)) ? faStar : faStarR} />
+                                                    </label>
+                                                    <label onMouseEnter={() => { setHovered(5) }} onMouseLeave={() => { setHovered(0) }}>
+                                                        <input className="visually-hidden" type="radio" name="rating" value="5" id="5" onChange={e => { e.preventDefault(); setNewRating(e.target.value) }} checked={newRating === "5"} />
+                                                        <FontAwesomeIcon icon={(hovered >= 5 || (hovered < 1 && newRating >= 5)) ? faStar : faStarR} />
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {/* comment form */}
+                                        <div>
+                                            <form className="col-6 d-flex flex-column row-gap-2">
+                                                <textarea className="form-control" placeholder="What do you think about this recipe?" cols="100" rows="5" type="text" value={newComment} onChange={(e) => { setNewComment(e.target.value) }}> </textarea>
+                                                <button className="btn btn-primary col-6 col-md-3 col-lg-2 col-xxl-1" onClick={commentSubmit}>Post</button>
+                                            </form>
+                                            {/* successfully post a comment notice */}
+                                            <ResultPostCard trigger={buttonPop} setTrigger={setButtonPop}>
+                                                <p className={popupGood ? "" : "text-danger"}>{popupMess}</p>
+                                                <div>
+                                                    <button className="btn btn-primary" onClick={() => setButtonPop(false)} >OK</button>
+                                                </div>
+                                            </ResultPostCard>
+                                        </div>
+                                    </> :
+                                    <div>Log in to rate and comment</div>}
+                                {/* comments display  */}
+                                <div className="d-flex flex-column">
+                                    {comments.map((c) => (
+                                        <SingleCommentCard key={c.id} comment={c} recipe={recipe} getComments={getComments} />
+                                    ))}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </>
-        </div>}
+                    </>
+                </div>}
         </>
-    ) 
+    )
 }

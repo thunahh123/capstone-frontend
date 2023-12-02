@@ -103,9 +103,9 @@ export const SingleCommentCard = function (props) {
                                 <button className="btn btn-danger" onClick={cancelEdit}>Cancel</button>
                             </>
                             : <>
-                                {props.comment.parent_comment_id == null ? <span className="mx-2 text-danger" onClick={() => setReply(!reply)}>Reply</span> : <></>}
-                                {secureLocalStorage.getItem("user_id") === props.comment.author_id || secureLocalStorage.getItem("is_admin") ? <span onClick={(e)=>{setDeletePop(true);e.preventDefault()}} className="text-primary"><FontAwesomeIcon icon={faTrash} title="Delete comment" /></span> : <></>}
-                                {secureLocalStorage.getItem("user_id") === props.comment.author_id || secureLocalStorage.getItem("is_admin") ? <span onClick={() => startEditing()} className="text-primary"><FontAwesomeIcon icon={faPen} title="Edit comment" /></span> : <></>}
+                                {props.comment.parent_comment_id == null && secureLocalStorage.getItem('session_key') ? <span className="mx-2 text-danger" onClick={() => setReply(!reply)}>Reply</span> : <></>}
+                                {secureLocalStorage.getItem('username') && (secureLocalStorage.getItem("user_id") === props.comment.author_id || secureLocalStorage.getItem("is_admin")) ? <span onClick={(e)=>{setDeletePop(true);e.preventDefault()}} className="text-primary"><FontAwesomeIcon icon={faTrash} title="Delete comment" /></span> : <></>}
+                                {secureLocalStorage.getItem('username') && (secureLocalStorage.getItem("user_id") === props.comment.author_id || secureLocalStorage.getItem("is_admin")) ? <span onClick={() => startEditing()} className="text-primary"><FontAwesomeIcon icon={faPen} title="Edit comment" /></span> : <></>}
 
                             </>}
                     </div>
