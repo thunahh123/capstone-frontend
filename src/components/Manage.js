@@ -17,7 +17,7 @@ export const Manage = function () {
     const [allRecipes, setAllRecipes] = useState([]);
     const [deletePop, setDeletePop] = useState(false);
     const [userToDelete, setUserToDelete] = useState(null);
-    const [recipeToDelete, setRecipeToDelete] = useState(null);
+
     useEffect(getUsers, []);
     // useEffect(filterUsers, [userSearchString]);
     useEffect(getRecipes, [recipeSearchString]);
@@ -114,11 +114,9 @@ export const Manage = function () {
     }
 
     //delete user
-    function confirmDeleteRecipe() {
-
-
+    function confirmDeleteRecipe(id) {
             try {
-                fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/deleteRecipe?session_key=${secureLocalStorage.getItem('session_key')}&recipe_id=${recipeToDelete}`,
+                fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/deleteRecipe?session_key=${secureLocalStorage.getItem('session_key')}&recipe_id=${id}`,
                 {method: 'DELETE'})
                     .then(res => res.json())
                     .then(
@@ -326,19 +324,12 @@ export const Manage = function () {
                                     
                                     <td>{r.comments?.length}</td>
                                     <td className="d-flex flex-nowrap gap-4 justify-content-center">
-                                        <span onClick={()=>{setDeletePop(true); setRecipeToDelete(r.id)}}><FontAwesomeIcon icon={faTrash} title="delete recipe" /></span>
+                                        <span onClick={()=>{ confirmDeleteRecipe(r.id)}}><FontAwesomeIcon icon={faTrash} title="delete recipe" /></span>
                                         <span onClick={()=>{setFeaturedRecipe(r.id)}}>
                                             {!r.featured ?
                                             <FontAwesomeIcon icon={faArrowUp} title="be featured" />
                                             :<FontAwesomeIcon icon={faArrowDown} title="be featured" />}
                                         </span>
-                                        <DeletePopup trigger={deletePop} setTrigger={setDeletePop}>
-                                            <p>Are you sure want to delete this recipe?</p>
-                                            <div>
-                                                <button className="btn btn-primary m-2" onClick={confirmDeleteRecipe}>Yes</button>
-                                                <button className="btn btn-primary m-2" onClick={() => setDeletePop(false)} >No</button>
-                                            </div>
-                                        </DeletePopup>
                                     </td>
                                 </tr>
                             ))}
