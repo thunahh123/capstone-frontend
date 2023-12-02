@@ -173,7 +173,7 @@ export const UserPage = function (props) {
                                 <div>
                                     <h3 className="text-center">Saved Recipes</h3>
                                     <div>
-                                        {savedRecipes.map((s) => (<ProfileSavedRecipeCard key={s.id} savedRecipe={s} getSavedRecipes={getSavedRecipes} />))}
+                                        {savedRecipes?.map((s) => (<ProfileSavedRecipeCard key={s.id} savedRecipe={s} getSavedRecipes={getSavedRecipes} />))}
                                     </div>
 
                                 </div>
@@ -182,13 +182,13 @@ export const UserPage = function (props) {
                                     <div>
                                         <h3 className="text-center">Created Recipes</h3>
                                         <div>
-                                            {myRecipes.map((r) => (<ProfileRecipeCard key={r.id} recipe={r} getMyRecipes={getCreatedRecipes} />))}
+                                            {myRecipes?.map((r) => (<ProfileRecipeCard key={r.id} recipe={r} getMyRecipes={getCreatedRecipes} />))}
                                         </div>
                                     </div>
                                     :
                                     <div>
                                         <h3 className="text-center">My Comments</h3>
-                                        {myComments.map((c) => (<ProfileCommentCard key={c.id} comment={c} getMyComments={getComments} />))}
+                                        {myComments?.map((c) => (<ProfileCommentCard key={c.id} comment={c} getMyComments={getComments} />))}
                                     </div>
                             }
                         </div>
