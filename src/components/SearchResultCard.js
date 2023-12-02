@@ -1,3 +1,6 @@
+import { faStar } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+
 export const SearchResultCard = function (props) {
     return (
         <div className="d-flex mx-auto my-2 col-8 bg-secondary rounded-5 px-3 py-1">
@@ -23,8 +26,15 @@ export const SearchResultCard = function (props) {
             <div className="ps-2">
                 <div>
                 </div><h2 className="fw-normal"><a className="link-underline link-underline-opacity-0" rel="noreferrer noopener" target="_blank" href={"/recipe/" + props.recipe.id}>{props.recipe.title}</a></h2>
-                <span>{props.recipe.matching_ingredients} matches</span>
+                <div className="d-flex column-gap-5 row-gap-1 flex-wrap mb-2">
+                    <span className="">by&nbsp;<strong>{props.recipe.user?.name}</strong></span>
+                    <span className="">{new Date(props.recipe.created_at).toLocaleDateString()}</span>
+                    <span className="d-flex flex-nowrap align-items-center">{props.recipe.avg_rating}&nbsp;<FontAwesomeIcon icon={faStar}/>({props.recipe.ratings.length})</span>
+                    <span className="">{props.recipe.views} views</span>
+                </div>
+                <span className="">{props.recipe.matching_ingredients} matches</span>    
                 <p>
+                    
                     Do you have: {props.recipe.ingredients.filter(j => !props.searched.includes(j.id)).map((i, index) => (<><button className="btn btn-link p-0" onClick={() => { props.addIngredient(i.name, i.id) }} title="Add to ingredients?">{i.name}</button>{index !== props.recipe.ingredients.filter(j => !props.searched.includes(j.id)).length - 1 ? ", " : "?"}</>))}
                 </p>
                 <p>

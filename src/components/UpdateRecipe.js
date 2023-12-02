@@ -30,6 +30,8 @@ export const UpdateRecipe = function () {
     //recipe id 
     const [recipeId, setRecipeId] = useState(-1);
 
+    const listLength=8;
+
     //this function call fetchUnits function when the page loads
     useEffect(() => { fetchUnits() }, []);
     useEffect(getRecipe, []);
@@ -53,7 +55,13 @@ export const UpdateRecipe = function () {
                             setRecipeName(result.content.title);
                             setServings(result.content.serving);
                             setTime(result.content.cooking_time_in_mins);
-                            let newList = result.content.recipe_ingredients.map();
+                            let newList = result.content.recipe_ingredients.map((i)=>(
+                                {
+                                    "ingredient": structuredClone(i.ingredient),
+                                    "amount": i.quantity,
+                                    "unit": structuredClone(i.unit)
+                                }
+                            ));
                             setIngredientList(newList);
                             setLoading(false);
                         }
@@ -177,7 +185,7 @@ export const UpdateRecipe = function () {
         setBadUnitInput(false);
     }
     //this post function will add new recipe to db
-    function post() {
+    function updateRecipe() {
         setErrorMess("");
         if (!recipeName || !servings || !time || !desc || dirs.length == 0 || ingredientList.length == 0) {
             setErrorMess("Please complete the form");
@@ -192,18 +200,18 @@ export const UpdateRecipe = function () {
                 body: JSON.stringify({
                     "session_key": secureLocalStorage.getItem("session_key"),
                     "recipe_id": params.id,
-                    "time": time,
-                    "title": recipeName,
-                    "serving": servings,
-                    "desc": desc,
-                    "direction": dirs,
-                    "ingredients":
+                    "new_cooking_time": time,
+                    "new_title": recipeName,
+                    "new_serving": servings,
+                    "new_desc": desc,
+                    "new_direction": dirs,
+                    "new_ingredients":
                         ingredientList.map((i) =>
-                        ({
-                            "id": i.ingredient.id,
-                            "quantity": i.amount,
-                            "unit_id": i.unit.id
-                        })
+                            ({
+                                "id": i.ingredient.id,
+                                "quantity": i.amount,
+                                "unit_id": i.unit.id
+                            })
                         )
                 })
             })
@@ -212,7 +220,6 @@ export const UpdateRecipe = function () {
                 (result) => {
                     if (result.status === "success") {
                         setButtonPop(true);
-                        setRecipeId(result.newId);
                         setTimeout(()=>{redirect(`/recipe/${params.id}`)})
                     }
                     else {
@@ -244,9 +251,9 @@ export const UpdateRecipe = function () {
     }
 
     //post function
-    function recipeSubmit(e) {
+    function updateSubmit(e) {
         e.preventDefault();
-        post();
+        updateRecipe();
 
     }
 
@@ -302,7 +309,7 @@ export const UpdateRecipe = function () {
             </div>
             <div className="col-11 col-md-9 p-3 mx-auto">
                 <h5 className="text-start mx-auto">Ingredients:</h5>
-                <table className="table table-bordered mx-auto bg-primary">
+                <table className="table table-striped table-bordered mx-auto bg-primary">
                     <thead>
                         <tr>
                             <th scope="col">Ingredient</th>
@@ -315,15 +322,23 @@ export const UpdateRecipe = function () {
                         {/* map the list of ingredients added */}
 
                         <tr>
-                            <td>
-                                <input className={badIngInput ? "form-control is-invalid" : "form-control"} value={ingredient.name} autoComplete="off" type="text" placeholder="search" onChange={handleIngredientChange} />
-                                {ingredient.name.length > 0 && !Object.hasOwn(ingredient, "id") && searchResults.length > 0 ? <div className="border border-black bg-white rounded-3 position-absolute col-2">
+                            <td className="position-relative">
+                                <div className="position-absolute z-3 bg-white border border-black rounded-2">
+                                    <input className={badIngInput ? "form-control is-invalid" : "form-control"} value={ingredient.name} autoComplete="off" type="text" placeholder="search" onChange={handleIngredientChange} />
+                                    {ingredient.name.length > 0 && !Object.hasOwn(ingredient, "id") && searchResults.length > 0 ? <div className="">
 
                                     {/* map the ingredients search results */}
-                                    {searchResults.slice(0, 10).map((searchResult) =>
-                                        <div key={searchResult.id}><span onClick={() => { setIngredient(searchResult); setBadIngInput(false); }}>{searchResult.name}</span><hr /></div>
+                                    {searchResults.slice(0, listLength).map((searchResult, index) =>
+                                        <>
+                                            <option className="py-2 show-pointer" key={searchResult.id} onClick={() => { setIngredient(searchResult); setBadIngInput(false); }}>
+                                                {searchResult.name}
+                                            </option>
+                                            {index===searchResults.slice(0, listLength).length-1 ? <></> : <hr className="my-0 py-0"/>}
+                                        </>
                                     )}
                                 </div> : <></>}
+                                </div>
+                                
                             </td>
                             <td>
                                 {/* amout input */}
@@ -353,13 +368,13 @@ export const UpdateRecipe = function () {
                     </tbody>
                 </table>
             </div>
-            <button className="btn btn-primary" onClick={recipeSubmit}>POST</button>
+            <button className="btn btn-primary" onClick={updateSubmit}>UPDATE</button>
         </form>
         <ResultPostCard trigger={buttonPop} setTrigger={setButtonPop}>
             <p>Your recipe successfully posted </p>
             <div>
-                <a className="btn btn-primary" onClick={() => setButtonPop(false)} href={"/recipe/" + recipeId}>View Recipe</a>
-                <a className="btn btn-primary" onClick={() => setButtonPop(false)} href="/">Go to home</a>
+                <a className="btn btn-primary m-2" onClick={() => setButtonPop(false)} href={"/recipe/" + recipe.id}>View Recipe</a>
+                <a className="btn btn-primary m-2" onClick={() => setButtonPop(false)} href="/">Go to home</a>
             </div>
         </ResultPostCard>
     </div>:<></>}

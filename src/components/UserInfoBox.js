@@ -5,8 +5,7 @@ import { useNavigate } from "react-router-dom";
 export const UserInfoBox = function(props){
     const navigate = useNavigate();
 
-    function logout(){
-        
+    function logout(){ 
         try{
             fetch(`${process.env.REACT_APP_BACKEND_URL}/api/logout`,{
             method: "DELETE",
@@ -27,13 +26,11 @@ export const UserInfoBox = function(props){
             return navigate('/')
         }catch(error){
             console.error("Error:", error);
-        }
-        
-    }
-    
-    
+        }   
+    }    
+
     return(
-        <div className="col-2 d-flex flex-column justify-content-around">
+        <div className="col-2 d-flex flex-column gap-2">
             {props.username ? 
                 <>
                     <span className="fw-semibold text-center" >Signed in as: <a href={`/user/${props.username}`}>{props.username}</a></span>

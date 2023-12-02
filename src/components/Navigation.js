@@ -1,19 +1,18 @@
 import { NavLink } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
-export const Nav = function () {
+export const Navigation = function () {
     return (
-        <nav className="col-10 navbar navbar-expand-lg">
-            <div className="container-fluid">
-                <a className="navbar-brand row" href="/">
-                    <img></img>
-                    <h1>Emily's Recipes</h1>
-                </a>
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-                    <div className="navbar-nav">
+        <Navbar expand="lg" className="col-10">
+            <Container>
+                <Navbar.Brand href="/"><h1>Emily's Recipes</h1></Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="me-auto">
                         <NavLink className="nav-link fw-semibold fs-5" to="/">Home</NavLink>
                         <NavLink className="nav-link fw-semibold fs-5" to="/search">Search</NavLink>
                         {secureLocalStorage.getItem('username') ?
@@ -23,14 +22,10 @@ export const Nav = function () {
                             <NavLink className="nav-link fw-semibold fs-5" to="/manage">Manage</NavLink>
                             : <></>}
                         <NavLink className="nav-link fw-semibold fs-5" to="/about">About</NavLink>
-
-
-
-                    </div>
-                </div>
-            </div>
-        </nav>
-
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
     )
 }
 

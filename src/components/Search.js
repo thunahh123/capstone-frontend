@@ -6,17 +6,16 @@ export const Search = function () {
   const [ingredient, setIngredient] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [ingredientList, setIngredientList] = useState([]);
-  const [minTime, setMinTime] = useState(0);
   const [maxTime, setMaxTime] = useState(120);
-  const [minIng, setMinIng] = useState(0);
   const [maxIng, setMaxIng] = useState(20);
-  const [recipes, setRecipes] = useState([]); //for top match recipes
-
+  const [recipes, setRecipes] = useState([]); //for sorted recipes
+  const [allRecipes, setAllRecipes] = useState([]); //for top match recipes
+  const [sort, setSort] = useState("matches");
 
   // use useEffect to run the function whenever ingredient changes
   useEffect(() => { getIngredients() }, [ingredient]);
   // use useEffect to run filter function everytime the ingredients list changes
-  useEffect(() => { filterRecipes() }, [ingredientList, minIng, maxIng, minTime, maxTime]);
+  useEffect(() => { filterRecipes() }, [ingredientList, maxIng, maxTime]);
 
   // this function fetch all ingredients matching with the input
   function getIngredients() {
@@ -63,9 +62,9 @@ export const Search = function () {
     }
     try {//"ingredient_ids": ingredientList.map((ingredient)=>(ingredient.id))
       let query = new URLSearchParams({
-        "min_cook_time": minTime,
+        "min_cook_time": 0,
         "max_cook_time": maxTime,
-        "min_ingredients": minIng,
+        "min_ingredients": 0,
         "max_ingredients": maxIng
       });
       ingredientList.forEach(i => {
@@ -77,14 +76,37 @@ export const Search = function () {
         .then(res => res.json())
         .then(
           (result) => {
-            setRecipes(result);
+            setAllRecipes(result);
             console.log(result);
           });
     } catch (error) {
       console.error("Error:", error);
     }
-
   }
+
+  function sortRecipes(){
+    if(!recipes){
+      return;
+    }
+    let newRecipes = structuredClone(allRecipes);
+    switch(sort){
+      case "matches":
+        newRecipes.sort((a,b)=>(b.matching_ingredients-a.matching_ingredients));
+        break;
+      case "popularity":
+        newRecipes.sort((a,b)=>(b.views-a.views));
+        break;
+      case "date":
+        newRecipes.sort((a,b)=>(new Date(b.created_at).getTime()-new Date(a.created_at).getTime()));
+        break;
+      case "rating":
+        newRecipes.sort((a,b)=>(b.avg_rating-a.avg_rating));
+        break;
+    }
+    setRecipes(newRecipes);
+  }
+
+  useEffect(sortRecipes, [allRecipes, sort])
   return (
     <div className="d-flex flex-column h-100 flex-grow-1 border-top border-secondary">
 
@@ -93,17 +115,12 @@ export const Search = function () {
         {/* filters section */}
         <div className="col-12 col-md-3 col-xxl-2 bg-dark d-flex flex-column">
           <h4 className="text-center col-12 py-3">Filters</h4>
-          <div className="flex-grow-1 d-flex flex-column justify-content-around flex-shrink-0 px-2 text-center">
+          <div className="d-flex flex-column justify-content-around flex-shrink-0 px-2 text-center h-75">
             <div>
               <h5>Number of ingredients:</h5>
               <div className="d-flex">
-                <label className=" col-5 d-flex flex-column">
-                  <input type="number" value={minIng} min="1" onChange={(e) => { setMinIng(e.target.value); if (parseInt(maxIng) < parseInt(minIng) + 1) { setMaxIng(parseInt(minIng) + 1) } }} />
-                  min.
-                </label>
-                &nbsp;-&nbsp;
-                <label className=" col-5 d-flex flex-column">
-                  <input type="number" min={minIng} value={maxIng} onChange={(e) => { setMaxIng(e.target.value) }} />
+                <label className=" col-5 d-flex flex-column  mx-auto">
+                  <input type="number" min='1' value={maxIng} onChange={(e) => { setMaxIng(e.target.value) }} />
                   max.
                 </label>
               </div>
@@ -111,13 +128,8 @@ export const Search = function () {
             <div>
               <h5>Preparation time:</h5>
               <div className="d-flex">
-                <label className=" col-5 d-flex flex-column">
-                  <input type="number" value={minTime} min="1" step="5" onChange={(e) => { setMinTime(e.target.value); if (parseInt(maxTime) < parseInt(minTime) + 5) { setMaxIng(parseInt(minTime) + 5) } }} />
-                  min.
-                </label>
-                &nbsp;-&nbsp;
-                <label className=" col-5 d-flex flex-column">
-                  <input type="number" min={minTime} value={maxTime} step="5" onChange={(e) => { setMaxTime(e.target.value) }} />
+                <label className=" col-5 d-flex flex-column mx-auto">
+                  <input type="number" min='5' value={maxTime} step="5" onChange={(e) => { setMaxTime(e.target.value) }} />
                   max.
                 </label>
               </div>
@@ -125,16 +137,20 @@ export const Search = function () {
             <div>
               <h5>Sort by:</h5>
               <div className="d-flex flex-column col-6 mx-auto text-start">
+              <label>
+                  <input type="radio" name="sortBy" value="matches" checked={sort==="matches"} onChange={e=>setSort(e.target.value)}/>
+                  Matches
+                </label>
                 <label>
-                  <input type="radio" name="sortBy" value="popularity" />
+                  <input type="radio" name="sortBy" value="popularity" checked={sort==="popularity"} onChange={e=>setSort(e.target.value)}/>
                   Popularity
                 </label>
                 <label>
-                  <input type="radio" name="sortBy" value="date" />
+                  <input type="radio" name="sortBy" value="date" checked={sort==="date"} onChange={e=>setSort(e.target.value)}/>
                   Date
                 </label>
                 <label>
-                  <input type="radio" name="sortBy" value="rating" />
+                  <input type="radio" name="sortBy" value="rating" checked={sort==="rating"} onChange={e=>setSort(e.target.value)}/>
                   Rating
                 </label>
               </div>

@@ -6,7 +6,7 @@ import secureLocalStorage from "react-secure-storage";
 
 
 export const ProfileRecipeCard = function (props) {
-    const [buttonPop, setButtonPop] = useState(false);
+    const [deletePop, setDeletePop] = useState(false);
 
     //delete my recipe
     function deleteCreatedRecipe(id){
@@ -53,14 +53,14 @@ export const ProfileRecipeCard = function (props) {
                     </a>
                 </p>
                 <div className="d-flex gap-3">
-                    <span title="Delete Recipe" className="" role="button"><FontAwesomeIcon onClick={() => setButtonPop(true)} icon={faTrash} /></span>
+                    <span title="Delete Recipe" className="" role="button"><FontAwesomeIcon onClick={() => setDeletePop(true)} icon={faTrash} /></span>
                     <a title="Edit Recipe" className="" href={`/updateRecipe/${props.recipe.id}`}><FontAwesomeIcon icon={faEdit} /></a>
                 </div>
-                <DeletePopup trigger={buttonPop} setTrigger={setButtonPop}>
+                <DeletePopup trigger={deletePop} setTrigger={setDeletePop}>
                     <p>Are you sure want to delete this?</p>
                     <div>
                         <button className="btn btn-primary m-2" onClick={()=>{deleteCreatedRecipe(props.recipe.id)}}>Yes</button>
-                        <button className="btn btn-primary m-2" onClick={() => setButtonPop(false)} >No</button>
+                        <button className="btn btn-primary m-2" onClick={() => setDeletePop(false)} >No</button>
                     </div>
                 </DeletePopup>
             </div>

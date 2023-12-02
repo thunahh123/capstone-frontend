@@ -98,3 +98,7 @@ option:hover{
 .rot-r-90{
   transform: rotate(90deg);
 }
+
+.show-pointer{
+  cursor: pointer;
+}

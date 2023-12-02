@@ -2,7 +2,7 @@ import { useState } from "react"
 import { NavLink, useNavigate } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
 
-export const LogIn = function(params){
+export const LogIn = function(props){
     const [logUsername, setLogUsername] = useState("");
     const [logPassword, setLogPassword] = useState("");
     const [message, setMessage] = useState("");
@@ -27,7 +27,7 @@ export const LogIn = function(params){
                         secureLocalStorage.setItem("username", logUsername);
                         secureLocalStorage.setItem("is_admin", result.is_admin);
                         secureLocalStorage.setItem("user_id", result.user_id)
-                        params.setUsername(logUsername);
+                        props.setUsername(logUsername);
                         navigate("/");
                     }else{
                         setMessage(result.message);

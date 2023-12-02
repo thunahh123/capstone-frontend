@@ -108,8 +108,8 @@ export const Home = function () {
                 {searchResults.filter((item) => !ingredientList.map(ing => ing.id).includes(item.id)).length > 0 ? <div className="py-2">
                   {searchResults.filter((item) => !ingredientList.map(ing => ing.id).includes(item.id)).slice(0, 8).map((searchResult, index) =>
                     <>
-                      <option className="px-2 text-wrap" value={searchResult.name} key={searchResult.id} onClick={() => { addIngredient(searchResult.name, searchResult.id) }}>{searchResult.name}</option>
-                      {index == searchResults.filter((item) => !ingredientList.map(ing => ing.id).includes(item.id)).slice(0, 8).length - 1 ? <></> : <hr className="m-2" />}
+                      <option className="p-2 p-xxl-3 text-wrap show-pointer " value={searchResult.name} key={searchResult.id} onClick={() => { addIngredient(searchResult.name, searchResult.id) }}>{searchResult.name}</option>
+                      {index == searchResults.filter((item) => !ingredientList.map(ing => ing.id).includes(item.id)).slice(0, 8).length - 1 ? <></> : <hr className="mx-2 my-0 py-0" />}
                     </>
 
                   )}
