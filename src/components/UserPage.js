@@ -115,7 +115,7 @@ export const UserPage = function (props) {
 
 
     return (
-        user ?
+        user && savedRecipes && myComments && myRecipes ?
             <div className="d-flex flex-column h-100 flex-grow-1 border-top border-secondary">
                 <div className="d-flex flex-wrap flex-grow-1">
                     {/* user info */}
@@ -175,6 +175,7 @@ export const UserPage = function (props) {
                                     <div>
                                         {savedRecipes?.map((s) => (<ProfileSavedRecipeCard key={s.id} savedRecipe={s} getSavedRecipes={getSavedRecipes} />))}
                                     </div>
+                                    
 
                                 </div>
                                 :
