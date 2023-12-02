@@ -41,6 +41,7 @@ export const RecipePage = function (props) {
                             setMyRating(rating);
                             setNewRating(rating);
                             setAvgRating(result.avg_rating);
+                            setLoading(false);
                         } else {
                             setPopupMess(result.message);
                             setButtonPop(true);
