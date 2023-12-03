@@ -16,6 +16,7 @@ export const Register = function(){
         }
         if(!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(regEmail))){
             setMessage("Invalid email");
+            return;
         }
         try{
             fetch(`${process.env.REACT_APP_BACKEND_URL}/api/register`,{
