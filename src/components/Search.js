@@ -58,6 +58,7 @@ export const Search = function () {
   //this function will filter Recipes in Home page
   function filterRecipes() {
     if (ingredientList.length <= 0) {
+      setSearchResults([]);
       return;
     }
     try {//"ingredient_ids": ingredientList.map((ingredient)=>(ingredient.id))

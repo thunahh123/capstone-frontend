@@ -14,6 +14,9 @@ export const Register = function(){
             setMessage("Passwords do not match");
             return;
         }
+        if(!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(regEmail))){
+            setMessage("Invalid email");
+        }
         try{
             fetch(`${process.env.REACT_APP_BACKEND_URL}/api/register`,{
             method: "POST",
