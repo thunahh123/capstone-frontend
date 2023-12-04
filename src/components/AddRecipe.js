@@ -227,7 +227,7 @@ export const AddRecipe = function () {
         <div className="d-flex flex-row col-11 col-md-9 mx-auto px-3 flex-wrap row-gap-4">
           <label className="col-12 col-lg-10 col-xxl-6 d-flex gap-3">
             <h5>Name:</h5>
-            <input className="form-control" type="text" value={recipeName} onChange={(e) => { setRecipeName(e.target.value) }} required />
+            <input id="recipeName" className="form-control" type="text" value={recipeName} onChange={(e) => { setRecipeName(e.target.value) }} required />
           </label>
           <label className="col-12 col-lg-3 col-xxl-3 d-flex gap-3 ps-xxl-3">
             <h5 className="col-8 col-lg-5 text-xxl-end text-start">
