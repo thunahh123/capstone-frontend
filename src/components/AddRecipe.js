@@ -259,7 +259,7 @@ export const AddRecipe = function () {
           {/* map the directions */}
           {dirs.map((d, index) => (
             <div className="d-flex mx-auto my-1" key={index}>
-              <input className="form-control d-inline-block" type="text" value={d} onChange={(e) => { setDirection(e.target.value, index) }} required />
+              <input id={"direction"+index} className="form-control d-inline-block" type="text" value={d} onChange={(e) => { setDirection(e.target.value, index) }} required />
               <button className="btn btn-danger" onClick={(e) => { e.preventDefault(); deleteDir(index); }}>&#10006;</button>
             </div>
           ))}
