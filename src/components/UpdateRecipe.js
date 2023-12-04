@@ -260,7 +260,7 @@ export const UpdateRecipe = function () {
     return (<>{ loading?<div>Loading...</div> : <>
     {recipe.author_id===secureLocalStorage.getItem('user_id') || secureLocalStorage.getItem("is_admin") ?
     <div className="w-100">
-        <h2 className="text-center">Add New Recipe</h2>
+        <h2 className="text-center">Update {recipe.title}</h2>
         <form className="border border-black container-md py-4 text-center bg-dark" id="add-recipe-form">
             <p className="text-danger fw-bold">{errorMessage}</p>
             <div className="d-flex flex-row col-11 col-md-9 mx-auto px-3 flex-wrap row-gap-4">
