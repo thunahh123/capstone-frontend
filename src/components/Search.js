@@ -83,9 +83,6 @@ export const Search = function () {
   }
 
   function sortRecipes(){
-    if(!recipes){
-      return;
-    }
     if (ingredientList.length <= 0) {
       setRecipes([]);
       return;
