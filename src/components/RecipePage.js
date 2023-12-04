@@ -256,7 +256,7 @@ export const RecipePage = function (props) {
                         <div className="d-flex pt-3">
                             <div className="d-flex flex-column align-items-center col">
                                 <h1 className="mx-auto text-center">{recipe.title}</h1>
-                                <span className="my-3">{recipe.avg_rating}<FontAwesomeIcon icon={faStar} /> ({recipe.ratings?.length}&nbsp;ratings)</span>
+                                <span className="my-3">{recipe.avg_rating.toFixed(1)}<FontAwesomeIcon icon={faStar} /> ({recipe.ratings?.length}&nbsp;ratings)</span>
                             </div>
                             <div className="col d-flex justify-content-end">
                                 <div className="col-10 d-flex flex-column my-2 gap-2">
