@@ -227,7 +227,7 @@ export const AddRecipe = function () {
         <div className="d-flex flex-row col-11 col-md-9 mx-auto px-3 flex-wrap row-gap-4">
           <label className="col-12 col-lg-10 col-xxl-6 d-flex gap-3">
             <h5>Name:</h5>
-            <input id="recipeName" className="form-control" type="text" value={recipeName} onChange={(e) => { setRecipeName(e.target.value) }} required />
+            <input id="recipe-name" className="form-control" type="text" value={recipeName} onChange={(e) => { setRecipeName(e.target.value) }} required />
           </label>
           <label className="col-12 col-lg-3 col-xxl-3 d-flex gap-3 ps-xxl-3">
             <h5 className="col-8 col-lg-5 text-xxl-end text-start">
@@ -281,7 +281,7 @@ export const AddRecipe = function () {
 
               <tr>
                 <td>
-                  <input className={badIngInput ? "form-control is-invalid" : "form-control"} value={ingredient.name} autoComplete="off" type="text" placeholder="search" onChange={handleIngredientChange} />
+                  <input id="new-ingredient" className={badIngInput ? "form-control is-invalid" : "form-control"} value={ingredient.name} autoComplete="off" type="text" placeholder="search" onChange={handleIngredientChange} />
                   {ingredient.name.length > 0 && !Object.hasOwn(ingredient, "id") && searchResults.length > 0 ? <div className="border border-black bg-white rounded-3 position-absolute col-2">
 
                     {/* map the ingredients search results */}
@@ -292,11 +292,11 @@ export const AddRecipe = function () {
                 </td>
                 <td>
                   {/* amout input */}
-                  <input className={badAmountInput ? "form-control is-invalid" : "form-control"} type="number" value={newAmount} onChange={(e) => { setAmount(Math.max(e.target.value, 0)); setBadAmountInput(false); }} />
+                  <input new-amount className={badAmountInput ? "form-control is-invalid" : "form-control"} type="number" value={newAmount} onChange={(e) => { setAmount(Math.max(e.target.value, 0)); setBadAmountInput(false); }} />
                 </td>
                 <td>
                   {/* map the units */}
-                  <select value={newUnit.name} className={badUnitInput ? "form-select is-invalid" : "form-select"} onChange={(e) => { setNewUnit(unitsList[e.target.options[e.target.selectedIndex].index - 1]); setBadUnitInput(false) }}>
+                  <select id="new-unit" value={newUnit.name} className={badUnitInput ? "form-select is-invalid" : "form-select"} onChange={(e) => { setNewUnit(unitsList[e.target.options[e.target.selectedIndex].index - 1]); setBadUnitInput(false) }}>
                     <option value="" key="">--</option>
                     {unitsList.map((u, index) => (
                       <option data-index={index} key={u.id}>{u.unit}</option>
