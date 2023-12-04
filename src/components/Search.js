@@ -117,8 +117,8 @@ export const Search = function () {
             <div>
               <h5>Number of ingredients:</h5>
               <div className="d-flex">
-                <label className=" col-5 d-flex flex-column  mx-auto">
-                  <input type="number" min='1' value={maxIng} onChange={(e) => { setMaxIng(e.target.value) }} />
+                <label className=" col-5 d-flex flex-column  mx-auto">{maxIng} ingredients max.
+                  <input type="range" min='1' max="30" value={maxIng} onChange={(e) => { setMaxIng(e.target.value) }} />
                   max.
                 </label>
               </div>
@@ -127,7 +127,8 @@ export const Search = function () {
               <h5>Preparation time:</h5>
               <div className="d-flex">
                 <label className=" col-5 d-flex flex-column mx-auto">
-                  <input type="number" min='5' value={maxTime} step="5" onChange={(e) => { setMaxTime(e.target.value) }} />
+                  {(maxTime-(maxTime%60))/60}:{maxTime%60<10?0:""}{maxTime%60}
+                  <input type="range" min='5' max='480' value={maxTime} step="5" onChange={(e) => { setMaxTime(e.target.value) }} />
                   max.
                 </label>
               </div>
