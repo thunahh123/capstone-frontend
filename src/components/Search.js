@@ -57,7 +57,10 @@ export const Search = function () {
 
   //this function will filter Recipes in Home page
   function filterRecipes() {
-    
+    if(ingredientList.length==0){
+      setAllRecipes([]);
+    }
+    setAllRecipes([]);
     try {//"ingredient_ids": ingredientList.map((ingredient)=>(ingredient.id))
       let query = new URLSearchParams({
         "min_cook_time": 0,
@@ -83,10 +86,6 @@ export const Search = function () {
   }
 
   function sortRecipes(){
-    if (ingredientList.length <= 0) {
-      setRecipes([]);
-      return;
-    }
     let newRecipes = structuredClone(allRecipes);
     switch(sort){
       case "matches":
